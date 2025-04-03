@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('home') }}" class="back-link">חזרה</a> <!-- Back button -->
+
+    <article class="article-detail">
+
+        <header class="article-header">
+            <h1>{{ article.title }}</h1>
+            <time class="article-date">{{ article.upload_date }}</time>
+        </header>
+        <section class="search-bar">
+            <input type="text" placeholder="חפשו שמות, משפטים או ביטויים מתוך פרק זה">
+            <button>
+                <i class="fas fa-search"></i> <!-- Font Awesome search icon -->
+            </button>
+        </section>
+    
+        <section class="article-body">
+            <h2>נושאי הפרק:</h2>
+            <ul>
+                {% for topic in article.topical_issues %}
+                <li>{{ topic }}</li>
+                {% endfor %}
+            </ul>
+            <pre class="episode-text">{{ article_text }}</pre> <!-- Use <pre> to preserve formatting -->
+        </section>
+        
+    </article>
+{% endblock %}

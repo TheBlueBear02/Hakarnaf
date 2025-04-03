@@ -1,0 +1,27 @@
+<!-- templates/layout.html -->
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}הקרנף{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <!-- Add Font Awesome for icons -->
+</head>
+<body>
+    <header class="site-header">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="לוגו הקרנף" class="site-logo">
+            <h1 class="site-title">כתבי הקרנף</h1>
+        </div>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="site-footer">
+        <p><a href="#">About</a> | <a href="#">Terms of Service</a></p>
+    </footer>
+</body>
+</html>
+

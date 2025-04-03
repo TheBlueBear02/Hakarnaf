@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block title %}תוצאות חיפוש{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('home') }}" class="back-link">חזרה</a> <!-- Return link -->
+
+<section class="search-bar">
+    <form action="{{ url_for('search') }}" method="get">
+        <input type="text" name="q" placeholder="חפשו שמות, משפטים או ביטויים מתוך כל הפרקים של הקרנף">
+        <button type="submit">
+            <i class="fas fa-search"></i> <!-- Font Awesome search icon -->
+        </button>
+    </form>
+</section>
+
+<h1>תוצאות חיפוש עבור "{{ search_term }}"</h1>
+<p>סה"כ {{ total_occurrences }} הופעות  ב{{ episodes_with_term }} פרקים</p>
+
+{% if results %}
+    <ul class="search-results">
+        {% for episode_name, lines in results.items() %}
+            <li>
+                <h2>{{ episode_name }}</h2>
+                <ul>
+                    {% for line in lines %}
+                        <li>
+                            <span>{{ line.line|safe }}</span> <!-- Render line as HTML -->
+                            <span class="occurrences">({{ line.occurrences }} הופעות)</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>לא נמצאו תוצאות.</p>
+{% endif %}
+{% endblock %}

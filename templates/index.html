@@ -1,0 +1,89 @@
+<!-- templates/index.html -->
+{% extends "layout.html" %}
+
+{% block title %}מאמרים{% endblock %}
+
+{% block content %}
+    <section class="search-bar">
+        <form action="{{ url_for('search') }}" method="get">
+            <input type="text" name="q" placeholder="חפשו שמות, משפטים או ביטויים מתוך כל הפרקים של הקרנף">
+            <button type="submit">
+                <i class="fas fa-search"></i> <!-- Font Awesome search icon -->
+            </button>
+        </form>
+    </section>
+
+    <section class="articles-carousel">
+        <div class="carousel-container">
+            <button class="carousel-nav prev">&lt;</button>
+            <div class="carousel">
+                {% for article in articles %}
+                    <article class="article-card">
+                        <a href="{{ url_for('article_detail', article_id=loop.index0) }}">
+                            <div class="article-image">
+                                <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="תמונה לפרק">
+                            </div>
+                            <h3 class="article-title">{{ article.title }}</h3>
+                            <time class="article-date">{{ article.upload_date }}</time>
+                            <p class="article-topics">{{ article.topical_issues }}</p>
+                        </a>
+                    </article>
+                {% endfor %}
+            </div>
+            <button class="carousel-nav next">&gt;</button>
+        </div>
+    </section>
+
+    <section class="episodes-container">
+        <div class="cards-grid">
+            {% for episode in episodes|reverse %}
+            <div class="episode-card">
+                <div class="episode-image">
+                    <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Episode Image">
+                </div>
+                <div class="episode-content">
+                    <h3 class="episode-title">
+                        <a href="{{ url_for('article_detail', article_id=loop.index0) }}">{{ episode.title }}</a>
+                    </h3>
+                    <p class="episode-date"><strong>{{ episode.upload_date }}</strong></p>
+
+                    <p class="episode-description">{{ episode.description }}</p>
+                    <ul class="episode-topics">
+                        <strong>נושאי הפרק:</strong>
+                        {% for topic in episode.topical_issues %}
+                        <li>{{ topic }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="site-stats">
+        <h2 class="stats-title">סטטיסטיקות הפרקים</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.file_count }}</div>
+                <div class="stat-label">מספר פרקים</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.total_words }}</div>
+                <div class="stat-label">סה"כ מילים</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.avg_words_per_file }}</div>
+                <div class="stat-label">ממוצע מילים לפרק</div>
+            </div>
+        </div>
+        <div class="common-words">
+            <h3 class="common-words-title">המילים הנפוצות ביותר</h3>
+            <ul class="common-words-list">
+                {% for word, count in stats.most_common_words %}
+                <li><span class="word">{{ word }}</span>: <span class="count">{{ count }}</span></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+{% endblock %}
+

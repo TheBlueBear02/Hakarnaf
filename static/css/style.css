@@ -1,0 +1,599 @@
+/* static/css/style.css */
+:root {
+    --primary-color: #333;
+    --secondary-color: #666;
+    --accent-color: #4a90e2;
+    --background-color: #fff;
+    --light-gray: #f5f5f5;
+    --border-color: #eee;
+    --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Import the Rubik font */
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* General styles */
+body {
+    font-family: 'Rubik', sans-serif; /* Set Rubik as the default font */
+    direction: rtl; /* Right-to-left layout for Hebrew */
+    text-align: right; /* Align text to the right */
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    color: #333;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+h1, h2, h3, p, a, ul, li, input, button {
+    font-family: inherit; /* Ensure all elements inherit the Rubik font */
+}
+
+h1, h2, h3 {
+    margin: 0;
+}
+
+main {
+    padding: 1rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+a {
+    text-decoration: none;
+    color: #007BFF;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+ul {
+    list-style: none;
+}
+
+/* Header */
+header {
+    display: flex; /* Use flexbox for layout */
+    justify-content: flex-start; /* Align content to the right */
+    align-items: center; /* Vertically center the content */
+    border-bottom: 1px solid #ddd;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5rem; /* Increase the font size for the title */
+    color: #333;
+    text-align: right; /* Align the title text to the right */
+    margin-left: 1rem; /* Add spacing between the title and the image */
+}
+
+.site-header {
+    padding: 1rem 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.site-logo {
+    width: 100px; /* Increase the size of the logo */
+    height: 100px;
+    float: right; /* Align the image to the right */
+    margin-left: 1rem; /* Add spacing between the image and the title */
+}
+
+/* Search Bar */
+.search-bar {
+    display: flex; /* Use flexbox for horizontal alignment */
+    justify-content: center; /* Center the input and button horizontally */
+    align-items: center; /* Align the input and button vertically */
+    margin: 2rem auto; /* Add vertical spacing and center the bar */
+    gap: 10px; /* Space between input and button */
+    width: 100%; /* Ensure it spans the container width */
+    max-width: 800px; /* Limit the maximum width */
+    box-sizing: border-box; /* Prevent size changes due to padding or border */
+}
+
+.search-bar form {
+    display: flex; /* Ensure the form behaves like a flex container */
+    width: 70%; /* Make the form span the full width of the search bar */
+    gap: 10px; /* Maintain spacing between input and button */
+    margin: 0 auto; /* Center the form horizontally */
+}
+
+.search-bar input {
+    flex: 1; /* Allow the input to take up available space */
+    max-width: 600px; /* Set a maximum width for larger screens */
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 25px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-bar input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5); /* Add a glow effect */
+}
+
+.search-bar button {
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    background-color: white;
+    color:  var(--accent-color);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    border: 2px solid var(--border-color);
+}
+
+.search-bar button i {
+    margin-right: 0.5rem; /* Add spacing between icon and text */
+    font-size: 1.2rem;
+}
+
+.search-bar button:hover {
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+.search-bar button:active {
+    transform: translateY(0); /* Reset lift effect on click */
+}
+
+/* Search Results */
+.search-results {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.search-results li {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background-color: var(--light-gray);
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.search-results .occurrences {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+}
+
+/* Articles Carousel */
+.articles-carousel {
+    text-align: center;
+}
+
+.carousel-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+}
+
+.article-card {
+    flex: 0 0 200px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 1rem;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.article-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.carousel-nav.prev {
+    left: 10px;
+}
+
+.carousel-nav.next {
+    right: 10px;
+}
+
+/* Article List */
+.section-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.article-grid {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping to the next row if there are too many cards */
+    gap: 1.5rem; /* Space between cards */
+    justify-content: space-between; /* Distribute cards evenly */
+}
+
+.article-card {
+    flex: 1 1 calc(33.333% - 1.5rem); /* Each card takes 1/3 of the row, minus the gap */
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: right;
+}
+
+.article-card img {
+    display: block;
+    margin: 0 auto;
+    max-width: 80%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+.article-title {
+    font-size: 1.2rem;
+    margin: 0 0 0.5rem;
+}
+
+.article-title a {
+    text-decoration: none;
+    color: #007BFF;
+}
+
+.article-title a:hover {
+    text-decoration: underline;
+}
+
+.article-date {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+    
+}
+
+.article-topics {
+    list-style: none;
+    padding: 10px;
+    margin: 10px;
+}
+
+.article-topics li {
+    font-size: 0.9rem;
+    color: #333;
+}
+
+/* Article styles */
+.article-detail h1,
+.article-detail h2 {
+    color: var(--accent-color);
+}
+
+.article-detail ul {
+    list-style-type: square;
+    padding-right: 1.5rem;
+}
+
+.article-detail ul li {
+    margin-bottom: 0.5rem;
+}
+
+/* Stats Section */
+.site-stats {
+    background-color: var(--light-gray);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+}
+
+.stats-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.stats-grid {
+    display: flex;
+    justify-content: space-around;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    flex: 1;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: var(--secondary-color);
+}
+
+.common-words {
+    text-align: center;
+}
+
+.common-words-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.common-words-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 1rem;
+    color: var(--primary-color);
+}
+
+.common-words-list li {
+    margin-bottom: 0.5rem;
+}
+
+.common-words-list .word {
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.common-words-list .count {
+    color: var(--secondary-color);
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 1rem 0;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.site-footer {
+    text-align: center;
+    padding: 1rem 0;
+    border-top: 1px solid #ddd;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Single Article Page */
+.single-article {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.article-header {
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space out the title and date */
+    align-items: center; /* Align items vertically */
+    border: none; /* Remove the border */
+    padding: 1rem 0; /* Add padding for spacing */
+}
+
+.article-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    color: var(--primary-color);
+}
+
+.article-header .article-date {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    text-align: left; /* Align the date text to the left */
+}
+
+.article-featured-image {
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.article-body {
+    margin-bottom: 2rem;
+}
+
+.back-link {
+    display: flex;
+    font-size: 1rem;
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    float: left;
+}
+
+.back-link:hover {
+    opacity: 0.6;
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .site-footer .container {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .footer-links {
+        justify-content: center;
+    }
+    
+    .article-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.cards-grid {
+    display: flex; /* Use flexbox for horizontal alignment */
+    flex-wrap: nowrap; /* Prevent wrapping to the next row */
+    gap: 20px; /* Add spacing between cards */
+    overflow-x: auto; /* Allow horizontal scrolling if cards exceed the container width */
+    padding: 10px; /* Add padding around the grid */
+    scrollbar-width: thin; /* For modern browsers, make the scrollbar less intrusive */
+}
+
+.cards-grid::-webkit-scrollbar {
+    height: 8px; /* Adjust scrollbar height for horizontal scrolling */
+}
+
+.cards-grid::-webkit-scrollbar-thumb {
+    background-color: #ccc; /* Style the scrollbar thumb */
+    border-radius: 4px;
+}
+
+.episode-card {
+    flex: 0 0 300px; /* Set a fixed width for each card and prevent shrinking/growing */
+    max-width: 300px; /* Optional: Limit the maximum width of each card */
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    text-align: center;
+}
+
+.episode-image img {
+    width: 200px;
+    height: 200px;
+}
+
+.episode-content {
+    padding: 15px;
+}
+
+.episode-title a {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.episode-title a:hover {
+    text-decoration: underline;
+}
+
+.episode-description {
+    margin: 10px 0;
+    color: #555;
+    font-size: 14px;
+}
+
+.episode-date {
+    color: #888;
+    font-size: 12px;
+    margin-top: .5rem;
+}
+
+.episode-topics {
+    color: #333;
+    font-size: 14px;
+    font-style: italic;
+    text-align: left; /* Align topics to the left */
+    padding: 0 1rem;
+    list-style-type: disc;
+    text-align: right;
+}
+
+.episode-topics li {
+    margin-bottom: 5px; /* Add spacing between list items */
+    direction: rtl;
+    text-align: right; /* Align text to the right */
+}
+
+.episode-text {
+    white-space: pre-wrap;
+    font-family: 'Rubik', sans-serif;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--primary-color);
+    background-color: var(--light-gray);
+    padding: 1.5rem;
+    border-radius: 5px;
+    overflow-x: auto;
+    text-align: justify;
+    margin-top: 3rem;
+    
+    
+}
+
+/* Highlight */
+.highlight {
+    background-color: yellow; /* Highlight background color */
+    padding: 0 2px; /* Add slight padding for better visibility */
+    border-radius: 3px; /* Round the edges */
+}
