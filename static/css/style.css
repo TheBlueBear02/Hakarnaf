@@ -216,6 +216,15 @@ header h1 {
     padding: 1rem;
     background-color: #f9f9f9;
     text-align: center;
+    text-decoration: none; /* Remove underline from links */
+    color: inherit; /* Inherit text color */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+}
+
+.article-card:hover {
+    transform: translateY(-5px); /* Slight lift effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+    text-decoration: none; /* Ensure no underline appears */
 }
 
 .article-card img {
@@ -269,6 +278,8 @@ header h1 {
     background-color: #f9f9f9;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     text-align: right;
+    text-decoration: none;
+
 }
 
 .article-card img {
@@ -291,7 +302,7 @@ header h1 {
 }
 
 .article-title a:hover {
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 .article-date {
@@ -390,7 +401,14 @@ header h1 {
     margin-bottom: 1rem;
 }
 
+.common-words-columns {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
 .common-words-list {
+    flex: 1;
     list-style: none;
     padding: 0;
     margin: 0;
@@ -525,15 +543,26 @@ footer {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background-color: #fff;
     text-align: center;
+    text-decoration: none; /* Remove underline from links */
+    color: inherit; /* Inherit text color */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+}
+
+.episode-card:hover {
+    transform: translateY(-5px); /* Slight lift effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+    text-decoration: none; /* Ensure no underline appears */
 }
 
 .episode-image img {
-    width: 200px;
-    height: 200px;
+    width: 300px;
+    height: 300px;
 }
 
 .episode-content {
     padding: 15px;
+    color: #007bff;
+
 }
 
 .episode-title a {
@@ -541,10 +570,6 @@ footer {
     text-decoration: none;
     font-size: 18px;
     font-weight: bold;
-}
-
-.episode-title a:hover {
-    text-decoration: underline;
 }
 
 .episode-description {
@@ -562,17 +587,19 @@ footer {
 .episode-topics {
     color: #333;
     font-size: 14px;
-    font-style: italic;
     text-align: left; /* Align topics to the left */
     padding: 0 1rem;
     list-style-type: disc;
     text-align: right;
+    font-family: 'Rubik', sans-serif;
 }
 
 .episode-topics li {
     margin-bottom: 5px; /* Add spacing between list items */
     direction: rtl;
     text-align: right; /* Align text to the right */
+    font-family: 'Rubik', sans-serif;
+
 }
 
 .episode-text {
@@ -587,8 +614,15 @@ footer {
     overflow-x: auto;
     text-align: justify;
     margin-top: 3rem;
-    
-    
+    float: right;
+    direction: rtl;
+}
+
+.episode-text .highlight {
+    background-color: yellow; /* Ensure highlight works within episode-text */
+    padding: 0 2px;
+    border-radius: 3px;
+    font-weight: bold; /* Optional: Make highlighted text bold */
 }
 
 /* Highlight */
@@ -596,4 +630,29 @@ footer {
     background-color: yellow; /* Highlight background color */
     padding: 0 2px; /* Add slight padding for better visibility */
     border-radius: 3px; /* Round the edges */
+    font-weight: bolder;
+}
+
+#occurrencesChart{
+    width: 100%;
+    height: 400px;
+    margin: 2rem auto;
+}
+.toggle-episode {
+    cursor: pointer; /* Ensure the cursor changes to a pointer */
+    padding: 0 1rem;;
+}
+
+.toggle-episode a {
+    text-decoration: none; /* Remove underline from the link */
+    color: var(--accent-color); /* Inherit the color from the parent */
+    margin-top: 0.4rem;
+}
+
+.toggle-episode:hover, .toggle-episode a:hover {
+    cursor: pointer; /* Ensure the pointer cursor works on hover */
+}
+.toggle-icon {
+    float: left;
+    color: grey;
 }

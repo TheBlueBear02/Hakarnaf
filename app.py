@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import os
 import json
 import collections
@@ -23,7 +23,8 @@ def calculate_episode_stats():
         "אומר", "ממש", "בסדר", "איזה", "כמה", "תודה", "פה", "אותו", "מי", "איפה", "מתי", "איך", "למה", "בגלל", "כדי",
         "או", "אבל", "גם", "רק", "כל", "אל", "לי", "היה", "כן", "הזה", "שהוא", "לנו", "אתם", "בוא", "נו", "שוב", "ככה",
         "אולי", "הייתי", "הייתה", "היית", "באמת", "דרך", "בינתיים", "לפני", "אחר", "אחרי", "היום", "אתמול", "מחר",
-        "כולם", "שלי", "נראה", "בעצם", "אליי", "אותך", "משהו"
+        "כולם", "שלי", "נראה", "בעצם", "אליי", "אותך", "משהו", "להיות", "הזאת", "להגיד", "חושב", "יודע", "פשוט", "לכם", "כך", "וגם","משמעות", "רוצה",
+        "שהיא", "כבר", "שלא", "נכון", "שהם", "ואני"
     }
 
     word_counter = collections.Counter()
@@ -42,7 +43,7 @@ def calculate_episode_stats():
                 word_counter.update(filtered_words)
                 total_words += len(words)
 
-    most_common_words = word_counter.most_common(5)
+    most_common_words = word_counter.most_common(10)
     avg_words_per_file = total_words / file_count if file_count > 0 else 0
 
     return {
@@ -57,6 +58,7 @@ def search_in_files(folder_path, search_term):
     results = collections.defaultdict(list)  # Group results by episode name
     total_occurrences = 0  # Counter for total occurrences of the search term
     episodes_with_term = 0  # Counter for episodes containing the search term
+    occurrences_per_episode = {}  # Track occurrences per episode
 
     for filename in os.listdir(folder_path):
         if filename.endswith(".txt"):  # Process only text files
@@ -80,11 +82,13 @@ def search_in_files(folder_path, search_term):
                         })
                 if episode_occurrences > 0:
                     episodes_with_term += 1
+            occurrences_per_episode[episode_name] = episode_occurrences
 
     return {
         "results": results,
         "total_occurrences": total_occurrences,
-        "episodes_with_term": episodes_with_term
+        "episodes_with_term": episodes_with_term,
+        "occurrences_per_episode": occurrences_per_episode  # Include occurrences per episode
     }
 
 @app.route('/')
@@ -96,23 +100,40 @@ def home():
 @app.route('/article/<int:article_id>')
 def article_detail(article_id):
     episodes = load_episodes()
+    search_term = request.args.get('q', '').strip()  # Get the search term from the query string
     if 0 <= article_id < len(episodes):
         article = episodes[article_id]
+        article['id'] = article_id  # Add the id key to the article dictionary
         # Load the episode text from the corresponding .txt file
         episode_text_file = os.path.join("episodes", f"{article['title']}.txt")
+        occurrences_count = 0  # Initialize occurrences count
         if os.path.exists(episode_text_file):
             with open(episode_text_file, "r", encoding="utf-8") as file:
                 article_text = file.read()
+                if search_term:
+                    # Count occurrences of the search term in the article text
+                    occurrences_count = article_text.count(search_term)
+                    # Highlight the search term in the article text
+                    article_text = article_text.replace(
+                        search_term, f"<span class='highlight'>{search_term}</span>"
+                    )
         else:
             article_text = "Text for this episode is not available."
-        return render_template('article_detail.html', article=article, article_text=article_text)
+        return render_template(
+            'article_detail.html',
+            article=article,
+            article_text=article_text,
+            search_term=search_term,  # Pass the search term to the template
+            occurrences_count=occurrences_count  # Pass the occurrences count to the template
+        )
     return "Article not found", 404
 
 @app.route('/search', methods=['GET'])
 def search():
     search_term = request.args.get('q', '').strip()  # Get the search term from the query string
     if not search_term:
-        return render_template('search_results.html', search_term=search_term, results=[], total_occurrences=0, episodes_with_term=0)
+        # Redirect back to the home page if the search term is empty
+        return redirect(url_for('home'))
 
     folder_path = "episodes"
     search_results = search_in_files(folder_path, search_term)
@@ -121,7 +142,9 @@ def search():
         search_term=search_term,
         results=search_results['results'],
         total_occurrences=search_results['total_occurrences'],
-        episodes_with_term=search_results['episodes_with_term']  # Pass the number of episodes
+        episodes_with_term=search_results['episodes_with_term'],  # Pass the number of episodes
+        occurrences_per_episode_keys=list(search_results['occurrences_per_episode'].keys()),  # Convert keys to list
+        occurrences_per_episode_values=list(search_results['occurrences_per_episode'].values())  # Convert values to list
     )
 
 if __name__ == '__main__':

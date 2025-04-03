@@ -1,6 +1,10 @@
 {% extends "layout.html" %}
 
-{% block title %}תוצאות חיפוש{% endblock %}
+{% block title %}Search Results{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% endblock %}
 
 {% block content %}
 <a href="{{ url_for('home') }}" class="back-link">חזרה</a> <!-- Return link -->
@@ -14,26 +18,104 @@
     </form>
 </section>
 
-<h1>תוצאות חיפוש עבור "{{ search_term }}"</h1>
-<p>סה"כ {{ total_occurrences }} הופעות  ב{{ episodes_with_term }} פרקים</p>
+<h1> תוצאות חיפוש עבור: "{{ search_term }}"</h1>
+
+<p style="margin-top: 1rem;"> "{{ search_term }}" מופיע סך הכל {{ total_occurrences }} פעמים ב{{ episodes_with_term }} פרקים </p>
+
+<div>
+    <canvas id="occurrencesChart"></canvas> <!-- Canvas for the line graph -->
+</div>
 
 {% if results %}
     <ul class="search-results">
         {% for episode_name, lines in results.items() %}
             <li>
-                <h2>{{ episode_name }}</h2>
-                <ul>
-                    {% for line in lines %}
-                        <li>
-                            <span>{{ line.line|safe }}</span> <!-- Render line as HTML -->
-                            <span class="occurrences">({{ line.occurrences }} הופעות)</span>
-                        </li>
-                    {% endfor %}
-                </ul>
+                <h2 class="toggle-episode" data-episode-id="episode-{{ loop.index0 }}">
+                    <span class="toggle-icon" id="icon-{{ loop.index0 }}">&#9660;</span> <!-- Down arrow as default -->
+                    <a href="{{ url_for('article_detail', article_id=loop.index0) }}">{{ episode_name }}</a>
+                </h2>
+                <div id="episode-{{ loop.index0 }}" class="episode-details">
+                    <ul>
+                        {% for line in lines %}
+                            <li>
+                                <span>{{ line.line|safe }}</span> <!-- Render line as HTML -->
+                                <span class="occurrences">({{ line.occurrences }} הופעות)</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </li>
         {% endfor %}
     </ul>
 {% else %}
-    <p>לא נמצאו תוצאות.</p>
+    <p>לא נמצאו תוצאות נסו לחפש את המילה בצורה אחרת.</p>
 {% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('occurrencesChart').getContext('2d');
+    const occurrencesData = {
+        labels: {{ occurrences_per_episode_keys | tojson }}, // Episode names as a list
+        datasets: [{
+            label: 'Occurrences of "{{ search_term }}"',
+            data: {{ occurrences_per_episode_values | tojson }}, // Occurrences per episode as a list
+            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            tension: 0.4
+        }]
+    };
+
+    const occurrencesChart = new Chart(ctx, {
+        type: 'line',
+        data: occurrencesData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false,
+                    position: 'top'
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        display: true // Remove grid lines for x-axis
+                    },
+                    title: {
+                        display: false,
+                        text: 'פרקים'
+                    }
+                },
+                y: {
+                    grid: {
+                        display: false // Remove grid lines for y-axis
+                    },
+                    title: {
+                        display: true,
+                        text: 'הופעות'
+                    },
+                    beginAtZero: true,
+                }
+            }
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const toggles = document.querySelectorAll('.toggle-episode');
+        toggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const episodeId = toggle.getAttribute('data-episode-id');
+                const details = document.getElementById(episodeId);
+                const icon = document.getElementById(`icon-${episodeId.split('-')[1]}`);
+                if (details.style.display === 'none' || details.style.display === '') {
+                    details.style.display = 'block';
+                    icon.innerHTML = '&#9650;'; // Up arrow
+                } else {
+                    details.style.display = 'none';
+                    icon.innerHTML = '&#9660;'; // Down arrow
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

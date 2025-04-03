@@ -18,16 +18,14 @@
             <button class="carousel-nav prev">&lt;</button>
             <div class="carousel">
                 {% for article in articles %}
-                    <article class="article-card">
-                        <a href="{{ url_for('article_detail', article_id=loop.index0) }}">
-                            <div class="article-image">
-                                <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="תמונה לפרק">
-                            </div>
-                            <h3 class="article-title">{{ article.title }}</h3>
-                            <time class="article-date">{{ article.upload_date }}</time>
-                            <p class="article-topics">{{ article.topical_issues }}</p>
-                        </a>
-                    </article>
+                    <a href="{{ url_for('article_detail', article_id=loop.index0) }}" class="article-card">
+                        <div class="article-image">
+                            <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="תמונה לפרק">
+                        </div>
+                        <h3 class="article-title">{{ article.title }}</h3>
+                        <time class="article-date">{{ article.upload_date }}</time>
+                        <p class="article-topics">{{ article.topical_issues }}</p>
+                    </a>
                 {% endfor %}
             </div>
             <button class="carousel-nav next">&gt;</button>
@@ -37,16 +35,13 @@
     <section class="episodes-container">
         <div class="cards-grid">
             {% for episode in episodes|reverse %}
-            <div class="episode-card">
+            <a href="{{ url_for('article_detail', article_id=loop.index0) }}" class="episode-card">
                 <div class="episode-image">
                     <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Episode Image">
                 </div>
                 <div class="episode-content">
-                    <h3 class="episode-title">
-                        <a href="{{ url_for('article_detail', article_id=loop.index0) }}">{{ episode.title }}</a>
-                    </h3>
+                    <h3 class="episode-title">{{ episode.title }}</h3>
                     <p class="episode-date"><strong>{{ episode.upload_date }}</strong></p>
-
                     <p class="episode-description">{{ episode.description }}</p>
                     <ul class="episode-topics">
                         <strong>נושאי הפרק:</strong>
@@ -55,7 +50,7 @@
                         {% endfor %}
                     </ul>
                 </div>
-            </div>
+            </a>
             {% endfor %}
         </div>
     </section>
@@ -78,11 +73,24 @@
         </div>
         <div class="common-words">
             <h3 class="common-words-title">המילים הנפוצות ביותר</h3>
-            <ul class="common-words-list">
-                {% for word, count in stats.most_common_words %}
-                <li><span class="word">{{ word }}</span>: <span class="count">{{ count }}</span></li>
-                {% endfor %}
-            </ul>
+            <div class="common-words-columns">
+                <ul class="common-words-list">
+                    {% for word, count in stats.most_common_words[:5] %}
+                    <li>
+                        <a href="{{ url_for('search', q=word) }}" class="word">{{ word }}</a>: 
+                        <span class="count">{{ count }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <ul class="common-words-list">
+                    {% for word, count in stats.most_common_words[5:10] %}
+                    <li>
+                        <a href="{{ url_for('search', q=word) }}" class="word">{{ word }}</a>: 
+                        <span class="count">{{ count }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     </section>
 {% endblock %}

@@ -11,10 +11,12 @@
 </head>
 <body>
     <header class="site-header">
-        <div class="logo-container">
-            <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="לוגו הקרנף" class="site-logo">
-            <h1 class="site-title">כתבי הקרנף</h1>
-        </div>
+        <a href="{{ url_for('home') }}" style="text-decoration: none; color: inherit;">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="לוגו הקרנף" class="site-logo">
+                <h1 class="site-title">ארכיון הקרנף</h1>
+            </div>
+        </a>
     </header>
     <main>
         {% block content %}{% endblock %}
