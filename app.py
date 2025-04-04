@@ -24,7 +24,7 @@ def calculate_episode_stats():
         "או", "אבל", "גם", "רק", "כל", "אל", "לי", "היה", "כן", "הזה", "שהוא", "לנו", "אתם", "בוא", "נו", "שוב", "ככה",
         "אולי", "הייתי", "הייתה", "היית", "באמת", "דרך", "בינתיים", "לפני", "אחר", "אחרי", "היום", "אתמול", "מחר",
         "כולם", "שלי", "נראה", "בעצם", "אליי", "אותך", "משהו", "להיות", "הזאת", "להגיד", "חושב", "יודע", "פשוט", "לכם", "כך", "וגם","משמעות", "רוצה",
-        "שהיא", "כבר", "שלא", "נכון", "שהם", "ואני"
+        "שהיא", "כבר", "שלא", "נכון", "שהם", "ואני", "כמו", "שיש", "אפשר", "אוקיי", "אומרים", "שם", "צריך", "יכול", "הרבה"
     }
 
     word_counter = collections.Counter()
@@ -119,6 +119,11 @@ def article_detail(article_id):
                     )
         else:
             article_text = "Text for this episode is not available."
+
+        # Add Spotify embed URL to the article
+        spotify_embed_url = f"https://open.spotify.com/embed/episode/{article['spotify_episode_id']}"
+        article['spotify_embed_url'] = spotify_embed_url
+
         return render_template(
             'article_detail.html',
             article=article,

@@ -678,6 +678,7 @@ footer {
     text-decoration: none;
     font-size: 18px;
     font-weight: bold;
+
 }
 
 .episode-description {
@@ -717,7 +718,7 @@ footer {
     line-height: 1.8;
     color: var(--primary-color);
     background-color: var(--light-gray);
-    padding: 1.5rem;
+    padding: 0 1.5rem;
     border-radius: 5px;
     overflow-x: auto;
     text-align: justify;
@@ -782,3 +783,6 @@ footer {
     box-sizing: border-box;
 }
 
+.podcast-player {
+    margin-top: auto;
+}

@@ -8,6 +8,7 @@ import os
 from datetime import datetime
 import time  # Import the time module to measure runtime
 import json  # Import the json module
+from getSpotifyEpisodeId import search_episode_by_name
 
 # Load environment variables from .env
 load_dotenv()
@@ -24,13 +25,14 @@ def split_text(text, max_length=3000):
     chunks.append(text)  # Add the remaining text as the last chunk
     return chunks
 
+
 def process_text(text, api_key):
     """Fixes spelling, punctuation, and paragraph formatting for the text."""
-    client = openai.OpenAI(api_key=api_key)
+    openai.api_key = api_key  # Set the API key directly
     try:
-        response = client.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            temperature=0,  # Set temperature to 0 for deterministic output
+            temperature=0,
             messages=[
                 {"role": "system", "content": (
                     "אתה עורך טקסט בעברית. המשימה שלך היא:"
@@ -58,9 +60,9 @@ def process_text(text, api_key):
 
 def extract_topics(text, api_key):
     """Extracts specific topical issues from the text."""
-    client = openai.OpenAI(api_key=api_key)
+    openai.api_key = api_key  # Set the API key directly
     try:
-        response = client.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             temperature=0,  # Set temperature to 0 for deterministic output
             messages=[
@@ -86,23 +88,23 @@ def extract_topics(text, api_key):
 
 def extract_topics_from_chunks(text_chunks, api_key):
     """Extracts the most important topic from each text chunk."""
-    top_topics = []
-    client = openai.OpenAI(api_key=api_key)
+    openai.api_key = api_key  # Set the API key directly
 
+    top_topics = []
     for i, chunk in enumerate(text_chunks):
         print(f"Extracting the top topic from chunk {i + 1}/{len(text_chunks)}...")
         try:
-            response = client.chat.completions.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 temperature=0,  # Set temperature to 0 for deterministic output
                 messages=[
                     {"role": "system", "content": (
-                        "אתה עוזר לניתוח טקסט. המשימה שלך היא:"
-                        "\n1. לזהות את הנושא המרכזי והחשוב ביותר שעלה בטקסט."
-                        "\n2. הנושא צריך להיות ממוקד, מפורט וברור, לדוגמה: 'פיטורי ראש השב\"כ', 'הופעתה של מירי רגב בערוץ 14'."
-                        "\n3. להימנע מנושאים כלליים מדי כמו 'המצב הביטחוני' או 'הפוליטיקה בישראל'."
-                        "\n4. מאוד חשוב להחזיר את הנושא בלבד!, ללא הקדמות או הסברים נוספים."
-                        "\n5. להימנע מהוספת טקסט כמו 'הנושא המרכזי בקטע הוא'."
+                        "אתה עוזר לניתוח טקסט. המשימה שלך היא:" 
+                        "\n1. לזהות את הנושא המרכזי והחשוב ביותר שעלה בטקסט." 
+                        "\n2. הנושא צריך להיות ממוקד, מפורט וברור, לדוגמה: 'פיטורי ראש השב\"כ', 'הופעתה של מירי רגב בערוץ 14'." 
+                        "\n3. להימנע מנושאים כלליים מדי כמו 'המצב הביטחוני' או 'הפוליטיקה בישראל'." 
+                        "\n4. מאוד חשוב להחזיר את הנושא בלבד!, ללא הקדמות או הסברים נוספים." 
+                        "\n5. להימנע מהוספת טקסט כמו 'הנושא המרכזי בקטע הוא'." 
                         "בנוסף חשוב שזה יהיה תמציתי מקסימום משפט אחד קצר"
                     )},
                     {"role": "user", "content": chunk}
@@ -195,8 +197,22 @@ if __name__ == "__main__":
     print("Extracting the most important topic from each chunk...")
     top_topics = extract_topics_from_chunks(topic_chunks, api_key)
 
-    # Format the filename
-    safe_title = re.sub(r'[\\/*?:"<>|]', "_", title)  # Replace invalid characters
+    # Fetch Spotify episode ID
+    spotify_episode_id = None
+    try:
+        print(f"Searching for Spotify episode ID for: {title}")
+        episode_id = search_episode_by_name(title, limit=1)
+        if episode_id != 'None spotify episode found':
+            spotify_episode_id = episode_id  # Assuming the first result is the most relevant
+    except Exception as e:
+        print(f"Error fetching Spotify episode ID: {e}")
+
+    # Remove the term " | הקרנף" from the title
+    clean_title = title.replace(" | הקרנף", "")
+
+    # Format the filename using the cleaned title
+    safe_title = re.sub(r'[\\/*?:"<>|]', "_", clean_title)  # Replace invalid characters
+
     episodes_dir = "episodes"
     os.makedirs(episodes_dir, exist_ok=True)  # Ensure the episodes directory exists
     transcript_filename = os.path.join(episodes_dir, f"{safe_title}.txt")
@@ -208,10 +224,11 @@ if __name__ == "__main__":
 
     # Create or update the JSON file with episode metadata
     episode_data = {
-        "title": title,
+        "title": clean_title,
         "upload_date": date,
         "topical_issues": top_topics,
-        "transcript_file": os.path.basename(transcript_filename)
+        "transcript_file": os.path.basename(transcript_filename),
+        "spotify_episode_id": spotify_episode_id  # Assuming you have this variable defined
     }
 
     if os.path.exists(json_filename):

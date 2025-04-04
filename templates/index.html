@@ -12,29 +12,10 @@
         </form>
     </section>
 
-    <section class="articles-carousel">
-        <div class="carousel-container">
-            <button class="carousel-nav prev">&lt;</button>
-            <div class="carousel">
-                {% for article in articles %}
-                    <a href="{{ url_for('article_detail', article_id=loop.index0) }}" class="article-card">
-                        <div class="article-image">
-                            <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="תמונה לפרק">
-                        </div>
-                        <h3 class="article-title">{{ article.title }}</h3>
-                        <time class="article-date">{{ article.upload_date }}</time>
-                        <p class="article-topics">{{ article.topical_issues }}</p>
-                    </a>
-                {% endfor %}
-            </div>
-            <button class="carousel-nav next">&gt;</button>
-        </div>
-    </section>
-
     <section class="episodes-container">
         <div class="cards-grid">
             {% for episode in episodes|reverse %}
-            <a href="{{ url_for('article_detail', article_id=loop.index0) }}" class="episode-card">
+            <a href="{{ url_for('article_detail', article_id=(episodes|length - loop.index)) }}" class="episode-card">
                 <div class="episode-image">
                     <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Episode Image">
                 </div>
@@ -43,7 +24,7 @@
                     <p class="episode-date"><strong>{{ episode.upload_date }}</strong></p>
                     <p class="episode-description">{{ episode.description }}</p>
                     <ul class="episode-topics">
-                        <strong>נושאי הפרק:</strong>
+                        <h3 style="margin-bottom: .4rem;">נושאי הפרק:</h3>
                         {% for topic in episode.topical_issues %}
                         <li>{{ topic }}</li>
                         {% endfor %}
@@ -60,7 +41,7 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-value">{{ stats.file_count }}</div>
-                <div class="stat-label">מספר פרקים</div>
+                <div class="stat-label">פרקים</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value">{{ stats.total_words }}</div>
