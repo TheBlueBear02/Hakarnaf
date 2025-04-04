@@ -9,9 +9,9 @@
 
         <header class="article-header">
             <h1>{{ article.title }}</h1>
-            <time class="article-date">{{ article.upload_date }}</time>
         </header>
-        
+        <time class="article-date">{{ article.upload_date }}</time>
+
         <section class="search-bar">
             <form action="{{ url_for('article_detail', article_id=article['id']) }}" method="get">
                 <input type="text" name="q" placeholder="חפשו מילה בטקסט זה" value="{{ search_term }}">
