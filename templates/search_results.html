@@ -107,12 +107,14 @@
                 const episodeId = toggle.getAttribute('data-episode-id');
                 const details = document.getElementById(episodeId);
                 const icon = document.getElementById(`icon-${episodeId.split('-')[1]}`);
-                if (details.style.display === 'none' || details.style.display === '') {
-                    details.style.display = 'block';
-                    icon.innerHTML = '&#9650;'; // Up arrow
-                } else {
+                if (details.style.display === '' || details.style.display === 'block') {
                     details.style.display = 'none';
+                    icon.innerHTML = '&#9650;'; // Up arrow
+
+                } else {
+                    details.style.display = 'block';
                     icon.innerHTML = '&#9660;'; // Down arrow
+
                 }
             });
         });
