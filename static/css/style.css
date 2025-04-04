@@ -515,6 +515,114 @@ footer {
     }
 }
 
+/* Responsive styles for mobile view */
+@media (max-width: 768px) {
+    body {
+        padding: 0 1rem;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .site-logo {
+        width: 80px;
+        height: 80px;
+        margin-left: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    header h1 {
+        font-size: 1.8rem;
+        margin-left: 0;
+    }
+
+    .search-bar {
+        flex-direction: column;
+        width: 100%;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    .search-bar form {
+        width: 100%; /* Make the form span the full width of the search bar */
+    }
+    .search-bar input {
+        width: 100%;
+    }
+
+    .search-bar button {
+        width: 20%;
+    }
+
+    .article-grid {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .article-card {
+        flex: 1 1 100%;
+    }
+
+    .stats-grid {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .common-words-columns {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .episode-card {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    .episode-image img {
+        width: 100%;
+        height: auto;
+    }
+
+    .episode-text {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+
+    .carousel {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+    }
+
+    .carousel-nav {
+        display: none;
+    }
+
+    #occurrencesChart {
+        width: 100%;
+        height: auto;
+        margin: 0 auto;
+    }
+
+    .chart-container {
+        overflow-x: auto;
+        padding: 0 1rem;
+    }
+
+    .chart-container canvas {
+        max-width: 100%;
+    }
+
+    .content-wrapper {
+        flex-direction: column;
+    }
+
+    .content-wrapper .topics,
+    .content-wrapper .podcast-player {
+        flex: 1 1 100%;
+    }
+}
+
 .cards-grid {
     display: flex; /* Use flexbox for horizontal alignment */
     flex-wrap: nowrap; /* Prevent wrapping to the next row */
@@ -656,3 +764,21 @@ footer {
     float: left;
     color: grey;
 }
+
+.more-episodes {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+/* Added styles for content-wrapper to display topics and podcast player side by side */
+.content-wrapper {
+    display: flex;
+    gap: 1rem;
+}
+
+.content-wrapper .topics,
+.content-wrapper .podcast-player {
+    flex: 1 1 50%;
+    box-sizing: border-box;
+}
+

@@ -147,5 +147,10 @@ def search():
         occurrences_per_episode_values=list(search_results['occurrences_per_episode'].values())  # Convert values to list
     )
 
+@app.route('/all_articles')
+def all_articles():
+    episodes = load_episodes()  # Load episodes data
+    return render_template('all_articles.html', articles=episodes)  # Pass episodes as articles to the template
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

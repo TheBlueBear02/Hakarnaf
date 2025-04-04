@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block title %}כל הפרקים | ארכיון הקרנף{% endblock %}
+
+{% block content %}
+<main>
+    <a href="{{ url_for('home') }}" class="back-link">חזרה</a> <!-- Back button -->
+
+    <h1>כל המאמרים</h1>
+    <div class="article-grid">
+        {% for article in articles %}
+        <a href="{{ url_for('article_detail', article_id=loop.index0) }}" class="article-card">
+            <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Episode Image">
+            <div class="article-content">
+                <h2 class="article-title">{{ article.title }}</h2>
+                <p class="article-description">{{ article.description }}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}

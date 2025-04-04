@@ -4,10 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}הקרנף{% endblock %}</title>
+    <title>{% block title %} ארכיון הקרנף{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <!-- Add Font Awesome for icons -->
+    <link rel="icon" href="{{ url_for('static', filename='img/logo.jpg') }}" type="image/png">
 </head>
 <body>
     <header class="site-header">

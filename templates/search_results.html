@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
 
-{% block title %}Search Results{% endblock %}
+{% block title %}תוצאות חיפוש | ארכיון הקרנף {% endblock %}
 
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
 {% endblock %}
 
 {% block content %}
@@ -79,16 +80,23 @@
             scales: {
                 x: {
                     grid: {
-                        display: true // Remove grid lines for x-axis
+                        display: true
                     },
                     title: {
                         display: false,
                         text: 'פרקים'
+                    },
+                    ticks: {
+                        maxRotation: 45, // Rotate labels to save space
+                        minRotation: 45, // Ensure consistent rotation
+                        callback: function(value, index, values) {
+                            return this.getLabelForValue(value).substring(0, 10) + '...'; // Truncate long labels
+                        }
                     }
                 },
                 y: {
                     grid: {
-                        display: false // Remove grid lines for y-axis
+                        display: false
                     },
                     title: {
                         display: true,

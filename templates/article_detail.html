@@ -11,6 +11,7 @@
             <h1>{{ article.title }}</h1>
             <time class="article-date">{{ article.upload_date }}</time>
         </header>
+        
         <section class="search-bar">
             <form action="{{ url_for('article_detail', article_id=article['id']) }}" method="get">
                 <input type="text" name="q" placeholder="חפשו מילה בטקסט זה" value="{{ search_term }}">
@@ -23,16 +24,26 @@
         {% if search_term %}
             <p style="text-align: center;"> "{{ search_term }}" מופיע {{ occurrences_count }} פעמים בטקסט זה.</p>
         {% endif %}
-    
+        
+        
         <section class="article-body">
-            <h2>נושאי הפרק:</h2>
-            <ul>
-                {% for topic in article.topical_issues %}
-                <li>{{ topic }}</li>
-                {% endfor %}
-            </ul>
+            <div class="content-wrapper">
+                <div class="topics">
+                    <h2>נושאי הפרק:</h2>
+                    <ul>
+                        {% for topic in article.topical_issues %}
+                        <li>{{ topic }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="podcast-player">
+                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/episode/2WktwJYqmmkcDpTVQRWleq?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>                </div>
+                </div>
+
             <div class="article-text">
+
                 <div class="episode-text">
+
                     {{ article_text|safe }} <!-- Render the article text with highlights -->
                 </div>
             </div>

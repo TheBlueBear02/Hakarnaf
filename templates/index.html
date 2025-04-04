@@ -1,7 +1,6 @@
 <!-- templates/index.html -->
 {% extends "layout.html" %}
 
-{% block title %}מאמרים{% endblock %}
 
 {% block content %}
     <section class="search-bar">
@@ -53,10 +52,11 @@
             </a>
             {% endfor %}
         </div>
+        <h4 class="more-episodes"><a href="{{ url_for('all_articles') }}"> לכל הפרקים >> </a></h4>
     </section>
 
     <section class="site-stats">
-        <h2 class="stats-title">סטטיסטיקות הפרקים</h2>
+        <h2 class="stats-title">סטטיסטיקות</h2>
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-value">{{ stats.file_count }}</div>
