@@ -46,11 +46,26 @@ def calculate_episode_stats():
     most_common_words = word_counter.most_common(10)
     avg_words_per_file = total_words / file_count if file_count > 0 else 0
 
+    # Calculate the most common names
+    names = ["רונן בר", "הרצי הלוי", "ביבי", "בנימין נתניהו", "ישראל כץ", "בצלאל סמוטריץ", "בן גביר", "בני גנץ","נפתלי בנט", "איילת שקד", "יואב גלנט", "גדי איזנקוט", "בן גוריון"]
+    name_counter = collections.Counter()
+
+    for filename in os.listdir(folder_path):
+        if filename.endswith(".txt"):
+            file_path = os.path.join(folder_path, filename)
+            with open(file_path, "r", encoding="utf-8") as file:
+                text = file.read()
+                for name in names:
+                    name_counter[name] += text.count(name)
+
+    most_common_names = name_counter.most_common()
+
     return {
         "file_count": file_count,
         "total_words": total_words,
         "avg_words_per_file": int(avg_words_per_file),
-        "most_common_words": most_common_words
+        "most_common_words": most_common_words,
+        "most_common_names": most_common_names
     }
 
 def search_in_files(folder_path, search_term):

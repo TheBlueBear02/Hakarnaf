@@ -73,6 +73,28 @@
                 </ul>
             </div>
         </div>
+        <div class="common-names">
+            <h3 class="common-words-title" style="margin-bottom: 0;">השמות הכי מוזכרים </h3>
+            <h4 style="margin-bottom: 1rem;margin-top: 0; font-size: .7rem;"> (ביבי מוזכר יותר פעמים מאשר בן גוריון!)</h4>
+            <div class="common-words-columns">
+                <ul class="common-words-list">
+                    {% for name, count in stats.most_common_names[:5] %}
+                    <li>
+                        <a href="{{ url_for('search', q=name) }}" class="word">{{ name }}</a>: 
+                        <span class="count">{{ count }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <ul class="common-words-list">
+                    {% for name, count in stats.most_common_names[5:10] %}
+                    <li>
+                        <a href="{{ url_for('search', q=name) }}" class="word">{{ name }}</a>: 
+                        <span class="count">{{ count }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
     </section>
 {% endblock %}
 

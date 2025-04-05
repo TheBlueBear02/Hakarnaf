@@ -25,7 +25,7 @@ body {
     text-align: right; /* Align text to the right */
     margin: 0;
     padding: 0;
-    background-color: #ffffff;
+    background-color: #fdfdfd;
     color: #333;
     max-width: 800px;
     margin: 0 auto;
@@ -76,18 +76,34 @@ ul {
 
 /* Header */
 header {
-    display: flex; /* Use flexbox for layout */
-    justify-content: flex-start; /* Align content to the right */
-    align-items: center; /* Vertically center the content */
+    display: flex;
+    flex-direction: row; /* Align items in a row */
+    justify-content: space-between; /* Space out the logo and title */
+    align-items: center; /* Align items vertically */
     border-bottom: 1px solid #ddd;
+    padding: 1rem 0;
 }
 
+header .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.titles{
+    flex-direction: column; /* Stack elements vertically */
+
+}
 header h1 {
     margin: 0;
-    font-size: 2.5rem; /* Increase the font size for the title */
+    font-size: 2.5rem;
     color: #333;
-    text-align: right; /* Align the title text to the right */
-    margin-left: 1rem; /* Add spacing between the title and the image */
+}
+
+header h5 {
+    margin: 0;
+    font-size: 1rem;
+    color: #666;
+    margin-top: 0.5rem; /* Add spacing below the title */
 }
 
 .site-header {
@@ -107,6 +123,30 @@ header h1 {
     height: 100px;
     float: right; /* Align the image to the right */
     margin-left: 1rem; /* Add spacing between the image and the title */
+}
+
+/* Social icons in the header */
+.social-icons {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-right: auto; /* Push icons to the very left */
+    align-self: flex-end;
+}
+
+.social-icons a {
+    margin-left: 10px;
+    font-size: 1.5rem;
+    color: inherit;
+    text-decoration: none;
+}
+
+.social-icons a .fa-spotify {
+    color: #1DB954;
+}
+
+.social-icons a .fa-x-twitter {
+    color: #1DA1F2;
 }
 
 /* Search Bar */
@@ -429,6 +469,17 @@ header h1 {
     color: var(--secondary-color);
 }
 
+.common-names {
+    text-align: center; /* Center align the section */
+    margin-top: 2rem; /* Add spacing above the section */
+}
+
+.common-names .common-words-columns {
+    display: flex;
+    justify-content: center; /* Center align the columns */
+    gap: 1rem; /* Add spacing between columns */
+}
+
 /* Footer */
 footer {
     text-align: center;
@@ -717,7 +768,6 @@ footer {
     font-size: 1.1rem;
     line-height: 1.8;
     color: var(--primary-color);
-    background-color: var(--light-gray);
     padding: 0 1.5rem;
     border-radius: 5px;
     overflow-x: auto;
