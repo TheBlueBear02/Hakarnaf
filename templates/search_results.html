@@ -21,7 +21,7 @@
 
 <h1> תוצאות חיפוש עבור: "{{ search_term }}"</h1>
 
-<p style="margin-top: 1rem;"> "{{ search_term }}" מופיע סך הכל {{ total_occurrences }} פעמים ב{{ episodes_with_term }} פרקים </p>
+<p style="margin-top: 0rem; margin-bottom: 1rem;"> "{{ search_term }}" מופיע סך הכל {{ total_occurrences }} פעמים ב{{ episodes_with_term }} פרקים </p>
 
 <div>
     <canvas id="occurrencesChart"></canvas> <!-- Canvas for the line graph -->
@@ -30,10 +30,11 @@
 {% if results %}
     <ul class="search-results">
         {% for episode_name, lines in results.items() %}
+            {% set article_id = get_article_id(episode_name) %} <!-- Use the get_article_id function to fetch the correct article ID -->
             <li>
                 <h2 class="toggle-episode" data-episode-id="episode-{{ loop.index0 }}">
                     <span class="toggle-icon" id="icon-{{ loop.index0 }}">&#9660;</span> <!-- Down arrow as default -->
-                    <a href="{{ url_for('article_detail', article_id=loop.index0) }}">{{ episode_name }}</a>
+                    <a href="{{ url_for('article_detail', article_id=article_id, q=search_term) }}">{{ episode_name }}</a>
                 </h2>
                 <div id="episode-{{ loop.index0 }}" class="episode-details">
                     <ul>

@@ -121,6 +121,14 @@ def search_in_files(folder_path, search_term):
         "occurrences_per_episode": occurrences_per_episode  # Include occurrences per episode
     }
 
+def get_article_id(episode_name):
+    """Returns the article ID for a given episode name."""
+    episodes = load_episodes()
+    for index, episode in enumerate(episodes):
+        if episode['title'] == episode_name:
+            return index
+    return -1  # Return -1 if the episode name is not found
+
 @app.route('/')
 def home():
     episodes = load_episodes()  # Load episodes data
@@ -189,4 +197,5 @@ def all_articles():
     return render_template('all_articles.html', articles=episodes)  # Pass episodes as articles to the template
 
 if __name__ == '__main__':
+    app.jinja_env.globals.update(get_article_id=get_article_id)
     app.run(debug=True, host='0.0.0.0')
