@@ -6,7 +6,20 @@
 <main>
     <a href="{{ url_for('home') }}" class="back-link">חזרה</a> <!-- Back button -->
 
-    <h1 style="margin-bottom: 1rem;">כל הפרקים</h1>
+    <!-- Flex container for title and sort button -->
+    <div class="title-sort-container">
+        <h1 style="margin-bottom: 1rem; ">כל הפרקים</h1>
+        <div class="sort-options">
+            <button onclick="toggleOrder()">
+                {% if reverse_order %}
+                    הצג מהחדש לישן
+                {% else %}
+                    הצג מהישן לחדש
+                {% endif %}
+            </button>
+        </div>
+    </div>
+
     <div class="article-grid">
         {% for article in articles %}
         <a href="{{ url_for('article_detail', article_id=loop.index0) }}" class="article-card">
@@ -19,4 +32,13 @@
         {% endfor %}
     </div>
 </main>
+
+<script>
+    function toggleOrder() {
+        const currentUrl = new URL(window.location.href);
+        const reverse = currentUrl.searchParams.get('reverse') === 'true';
+        currentUrl.searchParams.set('reverse', !reverse);  // Toggle the reverse parameter
+        window.location.href = currentUrl.toString();  // Reload the page with the updated parameter
+    }
+</script>
 {% endblock %}

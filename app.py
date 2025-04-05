@@ -37,18 +37,31 @@ def calculate_episode_stats():
                   "משטרה"
                   ]
     word_counter = collections.Counter()
+    total_words = 0  # Track total words across all episodes
+    episode_count = 0  # Track the number of episodes
 
     for filename in os.listdir(folder_path):
         if filename.endswith(".txt"):
+            episode_count += 1  # Increment episode count
             file_path = os.path.join(folder_path, filename)
             with open(file_path, "r", encoding="utf-8") as file:
                 text = file.read().lower()
+                total_words += len(text.split())  # Count words in the episode
                 for word in word_list:
                     word_counter[word] += text.count(word)
 
     most_common_words = word_counter.most_common()
 
-    names = ["רונן בר", "הרצי", "ביבי", "בנימין נתניהו", "ישראל כץ", "בצלאל סמוטריץ", "בן גביר", "גנץ","בנט", "איילת שקד", " גלנט", "גדי איזנקוט", "בן גוריון","טראמפ","אמסלם","האריס"]
+    # Calculate average words per episode
+    avg_words_per_episode = total_words // episode_count if episode_count > 0 else 0
+
+    # Format total words and average words per episode with commas
+    total_words_formatted = f"{total_words:,}"
+    avg_words_per_episode_formatted = f"{avg_words_per_episode:,}"
+
+    names = ["רונן בר", "הרצי", "ביבי", "בנימין נתניהו", "ישראל כץ", "בצלאל סמוטריץ", "בן גביר", "גנץ","בנט", "איילת שקד", " גלנט", "גדי איזנקוט", "בן גוריון","טראמפ","אמסלם","האריס", "לפיד", "ליברמן", "אהוד ברק", "אהרון ברק",
+             "ביידן"
+             ]
     name_counter = collections.Counter()
 
     for filename in os.listdir(folder_path):
@@ -63,7 +76,10 @@ def calculate_episode_stats():
 
     return {
         "most_common_words": most_common_words,
-        "most_common_names": most_common_names
+        "most_common_names": most_common_names,
+        "total_words": total_words_formatted,
+        "episode_count": episode_count,
+        "avg_words_per_episode": avg_words_per_episode_formatted  # Pass formatted value
     }
 
 def search_in_files(folder_path, search_term):
@@ -72,6 +88,9 @@ def search_in_files(folder_path, search_term):
     total_occurrences = 0  # Counter for total occurrences of the search term
     episodes_with_term = 0  # Counter for episodes containing the search term
     occurrences_per_episode = {}  # Track occurrences per episode
+
+    episodes = load_episodes()  # Load episodes to preserve their order
+    episode_order = {episode['title']: index for index, episode in enumerate(episodes)}  # Map episode titles to their order
 
     for filename in os.listdir(folder_path):
         if filename.endswith(".txt"):  # Process only text files
@@ -97,11 +116,16 @@ def search_in_files(folder_path, search_term):
                     episodes_with_term += 1
             occurrences_per_episode[episode_name] = episode_occurrences
 
+    # Sort occurrences_per_episode by the order in the JSON file
+    sorted_occurrences_per_episode = dict(
+        sorted(occurrences_per_episode.items(), key=lambda item: episode_order.get(item[0], float('inf')))
+    )
+
     return {
         "results": results,
         "total_occurrences": total_occurrences,
         "episodes_with_term": episodes_with_term,
-        "occurrences_per_episode": occurrences_per_episode  # Include occurrences per episode
+        "occurrences_per_episode": sorted_occurrences_per_episode  # Return sorted occurrences
     }
 
 def get_article_id(episode_name):
@@ -116,7 +140,14 @@ def get_article_id(episode_name):
 def home():
     episodes = load_episodes()  # Load episodes data
     stats = calculate_episode_stats()  # Calculate episode statistics
-    return render_template('index.html', episodes=episodes, stats=stats)  # Pass stats to the template
+    return render_template(
+        'index.html',
+        episodes=episodes,
+        stats=stats,
+        total_words=stats["total_words"],  # Pass formatted total words
+        episode_count=stats["episode_count"],  # Pass episode count
+        avg_words_per_episode=stats["avg_words_per_episode"]  # Pass formatted average words per episode
+    )
 
 @app.route('/article/<int:article_id>')
 def article_detail(article_id):
@@ -176,8 +207,15 @@ def search():
 
 @app.route('/all_articles')
 def all_articles():
-    episodes = load_episodes()  # Load episodes data
-    return render_template('all_articles.html', articles=episodes)  # Pass episodes as articles to the template
+    episodes = load_episodes()  # Load episodes data in the order they appear in the JSON file
+    reverse_order = request.args.get('reverse', 'false').lower() == 'true'  # Check if reverse order is requested
+    if reverse_order:
+        episodes = list(reversed(episodes))  # Reverse the order of episodes
+    return render_template('all_articles.html', articles=episodes, reverse_order=reverse_order)  # Pass reverse_order to the template
+
+@app.route('/terms_of_service')
+def terms_of_service():
+    return render_template('terms_of_service.html')
 
 if __name__ == '__main__':
     app.jinja_env.globals.update(get_article_id=get_article_id)

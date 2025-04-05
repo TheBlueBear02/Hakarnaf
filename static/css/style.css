@@ -678,6 +678,40 @@ footer {
     }
 }
 
+/* Responsive styles for the all articles page */
+@media (max-width: 768px) {
+    .title-sort-container {
+        flex-direction: column; /* Stack the title and sort button vertically */
+        align-items: flex-start; /* Align items to the start */
+        gap: 1rem; /* Add spacing between the title and button */
+    }
+
+    .article-grid {
+        flex-direction: column; /* Stack articles vertically */
+        gap: 1rem; /* Add spacing between articles */
+    }
+
+    .article-card {
+        flex: 1 1 100%; /* Make each article card take the full width */
+        max-width: 100%; /* Ensure no card exceeds the container width */
+    }
+
+    .article-card img {
+        max-width: 100%; /* Ensure images fit within the card */
+        height: auto; /* Maintain aspect ratio */
+    }
+
+    .sort-options {
+        width: 100%; /* Make the sort button span the full width */
+        justify-content: center; /* Center the button */
+    }
+
+    .sort-options button {
+        width: 100%; /* Make the button span the full width */
+        text-align: center; /* Center the button text */
+    }
+}
+
 .cards-grid {
     display: flex; /* Use flexbox for horizontal alignment */
     flex-wrap: nowrap; /* Prevent wrapping to the next row */
@@ -839,4 +873,39 @@ footer {
 
 .podcast-player {
     margin-top: auto;
+}
+
+.sort-options {
+    display: flex;
+    justify-content: flex-end; /* Align the button to the right */
+    margin-bottom: 1rem; /* Add spacing below the sort options */
+}
+
+.sort-options button {
+    padding: 0.4rem 1rem;
+    font-size: 1rem;
+    background-color: var(--light-gray);
+    color: black;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.sort-options button:hover {
+    background-color: var(--border-color); /* Slightly darker shade for hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+.sort-options button:active {
+    transform: translateY(0); /* Reset lift effect on click */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Slightly reduced shadow */
+}
+
+.title-sort-container {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-between; /* Space out the title and button */
+    align-items: center; /* Align items vertically */
 }

@@ -40,7 +40,7 @@
         <h2 class="stats-title">סטטיסטיקות</h2>
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-value">{{ stats.file_count }}</div>
+                <div class="stat-value">{{ episode_count }}</div>
                 <div class="stat-label">פרקים</div>
             </div>
             <div class="stat-card">
@@ -48,10 +48,11 @@
                 <div class="stat-label">סה"כ מילים</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">{{ stats.avg_words_per_file }}</div>
+                <div class="stat-value">{{ avg_words_per_episode }}</div> <!-- Already formatted in Python -->
                 <div class="stat-label">ממוצע מילים לפרק</div>
             </div>
         </div>
+        
         <div class="common-words">
             <h3 class="common-words-title">מילים נפוצות </h3>
             <div class="common-words-columns">
