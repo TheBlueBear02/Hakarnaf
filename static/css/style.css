@@ -334,13 +334,17 @@ header h5 {
 .article-title {
     font-size: 1.2rem;
     margin: 0 0 0.5rem;
+    text-align: center;
 }
 
 .article-title a {
     text-decoration: none;
     color: #007BFF;
 }
-
+.all-articles-date{
+    font-size: .8rem;
+    text-align: center;
+}
 .article-title a:hover {
     text-decoration: none;
 }

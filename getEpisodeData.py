@@ -137,17 +137,17 @@ def get_video_info(video_url):
         return video_title, video_date
 
 def get_video_transcript(video_url, lang="iw"):
-    """Fetches the transcript in the specified language (default: Hebrew)."""
+    """Fetches the transcript in the specified language (default: Hebrew) and combines it into one paragraph."""
     video_id_match = re.search(r"(?<=v=)[^&]+", video_url) or re.search(r"(?<=youtu\.be/)[^?]+", video_url)
-    
+
     if not video_id_match:
         return "Invalid video URL"
-    
+
     video_id = video_id_match.group(0)
-    
+
     try:
         transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=[lang])
-        transcript_text = "\n".join([t['text'] for t in transcript])
+        transcript_text = " ".join([t['text'] for t in transcript])  # Combine all sentences into one paragraph
         print("got episode's transcript")
         return transcript_text
     except NoTranscriptFound:
@@ -159,6 +159,7 @@ def get_video_transcript(video_url, lang="iw"):
 
 def save_to_file(title, date, transcript, filename):
     """Saves the video info and transcript to a text file."""
+    filename = filename.replace("_", " ")  # Replace underscores with spaces in the filename
     with open(filename, "w", encoding="utf-8") as file:
         file.write(f"Title: {title}\n")
         file.write(f"Upload Date: {date}\n\n")

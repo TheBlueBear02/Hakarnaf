@@ -11,7 +11,12 @@ def load_episodes():
     episodes_file = os.path.join("episodes", "episodes.json")
     if os.path.exists(episodes_file):
         with open(episodes_file, "r", encoding="utf-8") as file:
-            return json.load(file)
+            episodes = json.load(file)
+            # Ensure each episode has a properly formatted date
+            for episode in episodes:
+                if 'upload_date' in episode:
+                    episode['date'] = episode['upload_date']  # Map 'upload_date' to 'date'
+            return episodes
     return []
 
 def calculate_episode_stats():
@@ -27,7 +32,7 @@ def calculate_episode_stats():
         "שהיא", "כבר", "שלא", "נכון", "שהם", "ואני", "כמו", "שיש", "אפשר", "אוקיי", "אומרים", "שם", "צריך", "יכול", "הרבה","זו", "לעשות","אחד","הכל","מחיאות","כפיים","עושה","ולא","הולך","בני"
     }
 
-    word_counter = collections.Counter()
+    word_counter = {}
     total_words = 0
     file_count = 0
 
@@ -36,18 +41,28 @@ def calculate_episode_stats():
             file_count += 1
             file_path = os.path.join(folder_path, filename)
             with open(file_path, "r", encoding="utf-8") as file:
-                text = file.read().lower()
-                text = text.translate(str.maketrans("", "", string.punctuation))
-                words = text.split()
-                filtered_words = [word for word in words if word not in stopwords]
-                word_counter.update(filtered_words)
-                total_words += len(words)
+                lines = file.readlines()  # Read lines to match `search_in_files`
+                for line in lines:
+                    text = line.lower()
+                    text = text.translate(str.maketrans("", "", string.punctuation))
+                    words = text.split()
+                    total_words += len(words)
 
-    most_common_words = word_counter.most_common(10)
+                    # Count occurrences of terms exactly as in `search_in_files`
+                    for word in words:
+                        word_counter[word] = word_counter.get(word, 0) + 1
+
+    # Filter out stopwords for most_common_words
+    filtered_word_counter = {
+        word: count for word, count in word_counter.items() if word not in stopwords
+    }
+
+    # Sort and get the top 10 most common words
+    most_common_words = sorted(filtered_word_counter.items(), key=lambda x: x[1], reverse=True)[:10]
     avg_words_per_file = total_words / file_count if file_count > 0 else 0
 
     # Calculate the most common names
-    names = ["רונן בר", "הרצי הלוי", "ביבי", "בנימין נתניהו", "ישראל כץ", "בצלאל סמוטריץ", "בן גביר", "בני גנץ","נפתלי בנט", "איילת שקד", "יואב גלנט", "גדי איזנקוט", "בן גוריון"]
+    names = ["רונן בר", "הרצי הלוי", "ביבי", "בנימין נתניהו", "ישראל כץ", "בצלאל סמוטריץ", "בן גביר", "גנץ","בנט", "איילת שקד", " גלנט", "גדי איזנקוט", "בן גוריון","טראמפ"]
     name_counter = collections.Counter()
 
     for filename in os.listdir(folder_path):
