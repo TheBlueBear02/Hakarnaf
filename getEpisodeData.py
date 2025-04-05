@@ -31,7 +31,7 @@ def process_text(text, api_key):
     openai.api_key = api_key  # Set the API key directly
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4",
             temperature=0,
             messages=[
                 {"role": "system", "content": (
@@ -63,7 +63,7 @@ def extract_topics(text, api_key):
     openai.api_key = api_key  # Set the API key directly
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4",
             temperature=0,  # Set temperature to 0 for deterministic output
             messages=[
                 {"role": "system", "content": (
@@ -95,7 +95,7 @@ def extract_topics_from_chunks(text_chunks, api_key):
         print(f"Extracting the top topic from chunk {i + 1}/{len(text_chunks)}...")
         try:
             response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
+                model="gpt-4",
                 temperature=0,  # Set temperature to 0 for deterministic output
                 messages=[
                     {"role": "system", "content": (
