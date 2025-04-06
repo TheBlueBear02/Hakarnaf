@@ -216,6 +216,9 @@ def all_articles():
 def terms_of_service():
     return render_template('terms_of_service.html')
 
+# Register get_article_id as a global function for Jinja2 templates
+app.config['TEMPLATES_AUTO_RELOAD'] = True  # Optional: Enable auto-reloading of templates
+app.jinja_env.globals.update(get_article_id=get_article_id)
+
 if __name__ == '__main__':
-    app.jinja_env.globals.update(get_article_id=get_article_id)
     app.run()
