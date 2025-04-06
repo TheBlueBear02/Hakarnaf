@@ -22,7 +22,7 @@
 
     <div class="article-grid">
         {% for article in articles %}
-        <a href="{{ url_for('article_detail', article_id=loop.index0) }}" class="article-card">
+        <a href="{{ url_for('article_detail', article_id=get_article_id(article.title)) }}" class="article-card">
             <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Episode Image">
             <div class="article-content">
                 <h2 class="article-title">{{ article.title }}</h2>

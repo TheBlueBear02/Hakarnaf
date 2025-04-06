@@ -135,10 +135,14 @@ header h5 {
 }
 
 .social-icons a {
-    margin-left: 10px;
+    position: relative; /* Ensure tooltips are positioned correctly */
     font-size: 1.5rem;
     color: inherit;
     text-decoration: none;
+}
+
+.social-icons a:hover {
+    text-decoration: none; /* Ensure hover effects don't override tooltips */
 }
 
 .social-icons a .fa-spotify {
