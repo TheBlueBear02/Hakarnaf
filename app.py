@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for
 import os
 import json
 import collections
-import string
 
 app = Flask(__name__)
 
@@ -219,4 +218,4 @@ def terms_of_service():
 
 if __name__ == '__main__':
     app.jinja_env.globals.update(get_article_id=get_article_id)
-    app.run(debug=True, host='0.0.0.0')
+    app.run(host='0.0.0.0')
