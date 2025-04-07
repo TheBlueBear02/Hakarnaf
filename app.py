@@ -86,7 +86,7 @@ def search_in_files(folder_path, search_term):
     results = collections.defaultdict(list)  # Group results by episode name
     total_occurrences = 0  # Counter for total occurrences of the search term
     episodes_with_term = 0  # Counter for episodes containing the search term
-    occurrences_per_episode = {}  # Track occurrences per episode
+    episodes_occurrences = {}  # Track occurrences per episode
 
     episodes = load_episodes()  # Load episodes to preserve their order
     episode_order = {episode['title']: index for index, episode in enumerate(episodes)}  # Map episode titles to their order
@@ -113,18 +113,24 @@ def search_in_files(folder_path, search_term):
                         })
                 if episode_occurrences > 0:
                     episodes_with_term += 1
-            occurrences_per_episode[episode_name] = episode_occurrences
+                    results[episode_name] = results[episode_name]  # Ensure results are grouped by episode_name
+                    episodes_occurrences[episode_name] = episode_occurrences  # Add to occurrences per episode
 
-    # Sort occurrences_per_episode by the order in the JSON file
-    sorted_occurrences_per_episode = dict(
-        sorted(occurrences_per_episode.items(), key=lambda item: episode_order.get(item[0], float('inf')))
+    # Sort results by the order in the JSON file
+    sorted_results = dict(
+        sorted(results.items(), key=lambda item: episode_order.get(item[0], float('inf')))
+    )
+
+    # Sort occurrences per episode by the same order
+    sorted_occurrences = dict(
+        sorted(episodes_occurrences.items(), key=lambda item: episode_order.get(item[0], float('inf')))
     )
 
     return {
-        "results": results,
+        "results": sorted_results,  # Ensure sorted_results is structured correctly
         "total_occurrences": total_occurrences,
         "episodes_with_term": episodes_with_term,
-        "occurrences_per_episode": sorted_occurrences_per_episode  # Return sorted occurrences
+        "occurrences_per_episode": sorted_occurrences  # Include occurrences per episode
     }
 
 def get_article_id(episode_name):

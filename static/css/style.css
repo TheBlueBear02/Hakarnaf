@@ -496,6 +496,7 @@ footer {
     border-top: 1px solid #ddd;
     font-size: 0.9rem;
     color: #666;
+    z-index: 1000; /* Ensure footer is above other content */
 }
 
 .site-footer {
@@ -815,9 +816,13 @@ footer {
     overflow-x: auto;
     text-align: justify;
     margin-top: 3rem;
-    float: right;
     direction: rtl;
+    text-indent: 0; /* Ensure no indentation at the start of the first line */
+    float: none; /* Remove float to prevent layout issues */
+    margin: 0 auto; /* Center the text block horizontally */
 }
+
+
 
 .episode-text .highlight {
     background-color: yellow; /* Ensure highlight works within episode-text */

@@ -25,8 +25,9 @@
         </a>
         <div class="social-icons">
             <a href="https://x.com/yoavr" target="_blank" title="הקרנף בטוויטר">
-                <i class="fab fa-x"></i>
+                <img src="{{ url_for('static', filename='img/x-icon.svg') }}" alt="x-icon" width="23" height="23" style="margin-top:5px;">
             </a>
+            
             <a href="https://open.spotify.com/show/6bcWODxao3AI48YzWpF6g5?si=50587686d51b4f24" target="_blank" title="הקרנף בספוטיפיי">
                 <i class="fab fa-spotify"></i>
             </a>
@@ -34,9 +35,10 @@
     </header>
     <main>
         {% block content %}{% endblock %}
-    </main>
+    </main> <!-- Ensure main is properly closed -->
     <footer class="site-footer">
-        <p> <a href="{{ url_for('terms_of_service') }}">אודות</a></p>
+        <p><a href="{{ url_for('terms_of_service') }}">אודות</a></p>
+        <p>האתר נבנה על ידי אמיר גבאי</p>
     </footer>
 </body>
 </html>
