@@ -815,14 +815,17 @@ footer {
     border-radius: 5px;
     overflow-x: auto;
     text-align: justify;
-    margin-top: 3rem;
     direction: rtl;
     text-indent: 0; /* Ensure no indentation at the start of the first line */
     float: none; /* Remove float to prevent layout issues */
-    margin: 0 auto; /* Center the text block horizontally */
+    margin: 1rem auto; /* Center the text block horizontally */
+    background-color: rgb(247, 247, 247);
 }
 
-
+.episode-p{
+    margin:0;
+    padding: 0;
+}
 
 .episode-text .highlight {
     background-color: yellow; /* Ensure highlight works within episode-text */

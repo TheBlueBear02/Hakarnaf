@@ -90,6 +90,7 @@ def search_in_files(folder_path, search_term):
 
     episodes = load_episodes()  # Load episodes to preserve their order
     episode_order = {episode['title']: index for index, episode in enumerate(episodes)}  # Map episode titles to their order
+    episodes_occurrences = {episode['title']: 0 for episode in episodes}  # Initialize all episodes with 0 occurrences
 
     for filename in os.listdir(folder_path):
         if filename.endswith(".txt"):  # Process only text files
@@ -114,7 +115,7 @@ def search_in_files(folder_path, search_term):
                 if episode_occurrences > 0:
                     episodes_with_term += 1
                     results[episode_name] = results[episode_name]  # Ensure results are grouped by episode_name
-                    episodes_occurrences[episode_name] = episode_occurrences  # Add to occurrences per episode
+                episodes_occurrences[episode_name] = episode_occurrences  # Update occurrences for the episode
 
     # Sort results by the order in the JSON file
     sorted_results = dict(
