@@ -16,7 +16,7 @@ load_dotenv()
 def split_text(text, max_length=3000):
     """Splits text into chunks of max_length tokens."""
     chunks = []
-    while len(text) > max_length:
+    while (len(text) > max_length):
         split_index = text.rfind(" ", 0, max_length)
         if split_index == -1:
             split_index = max_length
@@ -166,6 +166,15 @@ def save_to_file(title, date, transcript, filename):
         file.write("Transcript:\n")
         file.write(transcript)
 
+def get_spotify_episode_date(episode_id):
+    """Fetches the release date of a Spotify episode using its ID."""
+    try:
+        episode_details = get_episode_details(episode_id)  # Fetch episode details
+        return episode_details.get("release_date", "Unknown Date")  # Return release date or default
+    except Exception as e:
+        print(f"Error fetching Spotify episode date: {e}")
+        return "Unknown Date"
+
 if __name__ == "__main__":
     # Record the start time
     start_time = time.time()
@@ -200,13 +209,15 @@ if __name__ == "__main__":
 
     # Fetch Spotify episode ID
     spotify_episode_id = None
+    spotify_episode_date = "Unknown Date"  # Default value
     try:
         print(f"Searching for Spotify episode ID for: {title}")
-        episode_id = search_episode_by_name(title, limit=1)
-        if episode_id != 'None spotify episode found':
-            spotify_episode_id = episode_id  # Assuming the first result is the most relevant
+        episode_data = search_episode_by_name(title, limit=1)
+        if episode_data != 'None spotify episode found':
+            spotify_episode_id = episode_data['id']  # Assuming the first result is the most relevant
+            spotify_episode_date = episode_data['release_date']  # Fetch release date
     except Exception as e:
-        print(f"Error fetching Spotify episode ID: {e}")
+        print(f"Error fetching Spotify episode ID or date: {e}")
 
     # Remove the term " | הקרנף" from the title
     clean_title = title.replace(" | הקרנף", "")
@@ -226,7 +237,7 @@ if __name__ == "__main__":
     # Create or update the JSON file with episode metadata
     episode_data = {
         "title": clean_title,
-        "upload_date": date,
+        "upload_date": spotify_episode_date,
         "topical_issues": top_topics,
         "transcript_file": os.path.basename(transcript_filename),
         "spotify_episode_id": spotify_episode_id  # Assuming you have this variable defined
