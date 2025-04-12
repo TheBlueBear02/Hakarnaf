@@ -33,7 +33,7 @@ def calculate_episode_stats():
 
     word_list = ["ראש הממשלה", "ישראל", "איראן", "הרמט\"ל"," צה\"ל", "צבא", "חמאס", "חיזבאללה", "עזה", "שר הביטחון", "הקרנף", "שמאל", "ימין", "ערוץ 14"
                   "ערוץ 12", "ערוץ 13", "חדשות 12", "חדשות 13", "הכנסת", "אופוזיציה", "תוכנית", "פוליטיקה", "בחירות", "חוק", "בגץ", "בית המשפט",
-                  "משטרה", "שב\"כ", "מלחמה"
+                  "משטרה", "שב\"כ", "מלחמה", "קטאר"
                   ]
     word_counter = collections.Counter()
     total_words = 0  # Track total words across all episodes
@@ -163,7 +163,7 @@ def article_detail(article_id):
         article = episodes[article_id]
         article['id'] = article_id  # Add the id key to the article dictionary
         # Load the episode text from the corresponding .txt file
-        episode_text_file = os.path.join("episodes", f"{article['title']}.txt")
+        episode_text_file = os.path.join("episodes", f"{article['transcript_file']}")
         occurrences_count = 0  # Initialize occurrences count
         if os.path.exists(episode_text_file):
             with open(episode_text_file, "r", encoding="utf-8") as file:
