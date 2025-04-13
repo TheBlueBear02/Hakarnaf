@@ -185,7 +185,7 @@ def article_detail(article_id):
 @app.route('/search', methods=['GET'])
 def search():
     search_term = request.args.get('q', '').strip()  # Get the search term from the query string
-    reverse_order = request.args.get('reverse', 'false').lower() == 'true'  # Get the reverse order parameter
+    reverse_order = request.args.get('reverse', 'true').lower() == 'true'  # Default to true for newest first
     if not search_term:
         # Redirect back to the home page if the search term is empty
         return redirect(url_for('home'))
@@ -196,10 +196,11 @@ def search():
     # Convert the results OrderedDict to a regular dict for easier manipulation
     results_dict = dict(search_results['results'])
     
-    # Sort only the search results based on episode names
+    # Sort the results based on article IDs
     sorted_results = dict(
         sorted(
             results_dict.items(),
+            key=lambda x: get_article_id(x[0]),  # Sort by article ID
             reverse=reverse_order
         )
     )
