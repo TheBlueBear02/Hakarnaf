@@ -48,9 +48,10 @@
 <script>
     function toggleOrder() {
         const currentUrl = new URL(window.location.href);
-        const reverse = currentUrl.searchParams.get('reverse') === 'true';
-        currentUrl.searchParams.set('reverse', !reverse);  // Toggle the reverse parameter
-        window.location.href = currentUrl.toString();  // Reload the page with the updated parameter
+        // If reverse parameter exists in URL, use its opposite. If it doesn't exist, use false (since default is true)
+        const currentReverse = currentUrl.searchParams.has('reverse') ? currentUrl.searchParams.get('reverse') === 'true' : true;
+        currentUrl.searchParams.set('reverse', (!currentReverse).toString());
+        window.location.href = currentUrl.toString();
     }
 </script>
 {% endblock %}

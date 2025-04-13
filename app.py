@@ -222,7 +222,7 @@ def search():
 @app.route('/all_articles')
 def all_articles():
     episodes = load_episodes()  # Load episodes data in the order they appear in the JSON file
-    reverse_order = request.args.get('reverse', 'false').lower() == 'true'  # Check if reverse order is requested
+    reverse_order = request.args.get('reverse', 'true').lower() == 'true'  # Default to true for newest first
     if reverse_order:
         episodes = list(reversed(episodes))  # Reverse the order of episodes
     return render_template('all_articles.html', articles=episodes, reverse_order=reverse_order)  # Pass reverse_order to the template

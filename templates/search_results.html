@@ -43,7 +43,7 @@
             {% if reverse_order %}
                 הצג מהישן לחדש
             {% else %}
-                הצג מהחדש לישן      
+                הצג מהחדש לישן
             {% endif %}
         </button>
     </div>
@@ -155,16 +155,17 @@
 
     function toggleOrder() {
         const searchParams = new URLSearchParams(window.location.search);
-        const currentReverse = searchParams.get('reverse') === 'true';
-        searchParams.set('reverse', !currentReverse);
-        
-        // Preserve the search query
         const searchQuery = searchParams.get('q');
-        if (searchQuery) {
-            searchParams.set('q', searchQuery);
-        }
         
-        window.location.href = `${window.location.pathname}?${searchParams.toString()}`;
+        // Create a new URL with both parameters
+        const newUrl = new URL('{{ url_for("search") }}', window.location.origin);
+        newUrl.searchParams.set('q', searchQuery);
+        
+        // If reverse parameter exists in URL, use its opposite. If it doesn't exist, use false (since default is true)
+        const currentReverse = searchParams.has('reverse') ? searchParams.get('reverse') === 'true' : true;
+        newUrl.searchParams.set('reverse', (!currentReverse).toString());
+        
+        window.location.href = newUrl.toString();
     }
 </script>
 {% endblock %}
