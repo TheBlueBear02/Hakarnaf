@@ -28,6 +28,7 @@
     <section class="episodes-container">
         <div class="cards-grid">
             {% for episode in episodes|reverse %}
+            {% if loop.index <= 5 %}
             <a href="{{ url_for('article_detail', article_id=(episodes|length - loop.index)) }}" class="episode-card">
                 <div class="episode-image">
                     <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Episode Image">
@@ -44,7 +45,13 @@
                     </ul>
                 </div>
             </a>
+            {% endif %}
             {% endfor %}
+            <a href="{{ url_for('all_articles') }}" class="episode-card all-episodes-card">
+                <div class="episode-content" style="display: flex; justify-content: center; align-items: center; height: 100%;">
+                    <h2 style="text-align: center; color: #4a90e2;">לכל הפרקים >></h2>
+                </div>
+            </a>
         </div>
         <h4 class="more-episodes"><a href="{{ url_for('all_articles') }}"> לכל הפרקים >> </a></h4>
     </section>
