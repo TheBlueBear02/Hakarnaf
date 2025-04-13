@@ -117,21 +117,11 @@ def search_in_files(folder_path, search_term):
                     results[episode_name] = results[episode_name]  # Ensure results are grouped by episode_name
                 episodes_occurrences[episode_name] = episode_occurrences  # Update occurrences for the episode
 
-    # Sort results by the order in the JSON file
-    sorted_results = dict(
-        sorted(results.items(), key=lambda item: episode_order.get(item[0], float('inf')))
-    )
-
-    # Sort occurrences per episode by the same order
-    sorted_occurrences = dict(
-        sorted(episodes_occurrences.items(), key=lambda item: episode_order.get(item[0], float('inf')))
-    )
-
     return {
-        "results": sorted_results,  # Ensure sorted_results is structured correctly
+        "results": results,
         "total_occurrences": total_occurrences,
         "episodes_with_term": episodes_with_term,
-        "occurrences_per_episode": sorted_occurrences  # Include occurrences per episode
+        "occurrences_per_episode": episodes_occurrences
     }
 
 def get_article_id(episode_name):
@@ -195,20 +185,37 @@ def article_detail(article_id):
 @app.route('/search', methods=['GET'])
 def search():
     search_term = request.args.get('q', '').strip()  # Get the search term from the query string
+    reverse_order = request.args.get('reverse', 'false').lower() == 'true'  # Get the reverse order parameter
     if not search_term:
         # Redirect back to the home page if the search term is empty
         return redirect(url_for('home'))
 
     folder_path = "episodes"
     search_results = search_in_files(folder_path, search_term)
+    
+    # Convert the results OrderedDict to a regular dict for easier manipulation
+    results_dict = dict(search_results['results'])
+    
+    # Sort only the search results based on episode names
+    sorted_results = dict(
+        sorted(
+            results_dict.items(),
+            reverse=reverse_order
+        )
+    )
+    
+    # Keep the original order for the graph data
+    original_occurrences = search_results['occurrences_per_episode']
+    
     return render_template(
         'search_results.html',
         search_term=search_term,
-        results=search_results['results'],
+        results=sorted_results,
         total_occurrences=search_results['total_occurrences'],
-        episodes_with_term=search_results['episodes_with_term'],  # Pass the number of episodes
-        occurrences_per_episode_keys=list(search_results['occurrences_per_episode'].keys()),  # Convert keys to list
-        occurrences_per_episode_values=list(search_results['occurrences_per_episode'].values())  # Convert values to list
+        episodes_with_term=search_results['episodes_with_term'],
+        occurrences_per_episode_keys=list(original_occurrences.keys()),
+        occurrences_per_episode_values=list(original_occurrences.values()),
+        reverse_order=reverse_order
     )
 
 @app.route('/all_articles')

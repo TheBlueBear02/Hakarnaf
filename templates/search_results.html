@@ -32,9 +32,22 @@
     </form>
 </section>
 
-<h1> תוצאות חיפוש עבור: "{{ search_term }}"</h1>
-
-<p style="margin-top: 0rem; margin-bottom: 1rem;"> "{{ search_term }}" מופיע סך הכל {{ total_occurrences }} פעמים ב{{ episodes_with_term }} פרקים </p>
+<!-- Title and sort container -->
+<div class="title-sort-container">
+    <div>
+        <h1 style="margin-bottom: 1rem;">תוצאות חיפוש עבור: "{{ search_term }}"</h1>
+        <p style="margin-top: 0rem; margin-bottom: 1rem;"> "{{ search_term }}" מופיע סך הכל {{ total_occurrences }} פעמים ב{{ episodes_with_term }} פרקים </p>
+    </div>
+    <div class="sort-options">
+        <button onclick="toggleOrder()">
+            {% if reverse_order %}
+                הצג מהישן לחדש
+            {% else %}
+                הצג מהחדש לישן      
+            {% endif %}
+        </button>
+    </div>
+</div>
 
 <div>
     <canvas id="occurrencesChart"></canvas> <!-- Canvas for the line graph -->
@@ -43,19 +56,19 @@
 {% if results %}
     <ul class="search-results">
         {% for episode_name, lines in results.items() %}
-            {% set article_id = get_article_id(episode_name) %} <!-- Use the get_article_id function to fetch the correct article ID -->
+            {% set article_id = get_article_id(episode_name) %}
             <li>
                 <h2 class="toggle-episode" data-episode-id="episode-{{ loop.index0 }}">
-                    <span class="toggle-icon" id="icon-{{ loop.index0 }}">&#9660;</span> <!-- Down arrow as default -->
+                    <span class="toggle-icon" id="icon-{{ loop.index0 }}">&#9660;</span>
                     <a href="{{ url_for('article_detail', article_id=article_id, q=search_term) }}">{{ episode_name }}</a>
                 </h2>
                 <div id="episode-{{ loop.index0 }}" class="episode-details">
                     <ul>
                         {% for line in lines %}
-                            <li>
-                                <span>{{ line.line|safe }}</span> <!-- Render line as HTML -->
-                                <span class="occurrences">({{ line.occurrences }} הופעות)</span>
-                            </li>
+                        <li>
+                            <span>{{ line.line|safe }}</span>
+                            <span class="occurrences">({{ line.occurrences }} הופעות)</span>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -70,10 +83,10 @@
 <script>
     const ctx = document.getElementById('occurrencesChart').getContext('2d');
     const occurrencesData = {
-        labels: {{ occurrences_per_episode_keys | tojson }}, // Episode names as a list
+        labels: {{ occurrences_per_episode_keys | tojson }},
         datasets: [{
             label: 'Occurrences of "{{ search_term }}"',
-            data: {{ occurrences_per_episode_values | tojson }}, // Occurrences per episode as a list
+            data: {{ occurrences_per_episode_values | tojson }},
             borderColor: 'rgba(75, 192, 192, 1)',
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             tension: 0.4
@@ -101,10 +114,10 @@
                         text: 'פרקים'
                     },
                     ticks: {
-                        maxRotation: 45, // Rotate labels to save space
-                        minRotation: 45, // Ensure consistent rotation
+                        maxRotation: 45,
+                        minRotation: 45,
                         callback: function(value, index, values) {
-                            return this.getLabelForValue(value).substring(0, 10) + '...'; // Truncate long labels
+                            return this.getLabelForValue(value).substring(0, 10) + '...';
                         }
                     }
                 },
@@ -131,15 +144,27 @@
                 const icon = document.getElementById(`icon-${episodeId.split('-')[1]}`);
                 if (details.style.display === '' || details.style.display === 'block') {
                     details.style.display = 'none';
-                    icon.innerHTML = '&#9650;'; // Up arrow
-
+                    icon.innerHTML = '&#9650;';
                 } else {
                     details.style.display = 'block';
-                    icon.innerHTML = '&#9660;'; // Down arrow
-
+                    icon.innerHTML = '&#9660;';
                 }
             });
         });
     });
+
+    function toggleOrder() {
+        const searchParams = new URLSearchParams(window.location.search);
+        const currentReverse = searchParams.get('reverse') === 'true';
+        searchParams.set('reverse', !currentReverse);
+        
+        // Preserve the search query
+        const searchQuery = searchParams.get('q');
+        if (searchQuery) {
+            searchParams.set('q', searchQuery);
+        }
+        
+        window.location.href = `${window.location.pathname}?${searchParams.toString()}`;
+    }
 </script>
 {% endblock %}
