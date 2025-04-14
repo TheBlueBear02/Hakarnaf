@@ -141,7 +141,7 @@ def home():
         episodes=episodes,
         stats=stats,
         total_words=stats["total_words"],  # Pass formatted total words
-        episode_count=stats["episode_count"],  # Pass episode count
+        episode_count=stats["episode_count"] + 1,  # Pass episode count
         avg_words_per_episode=stats["avg_words_per_episode"]  # Pass formatted average words per episode
     )
 
