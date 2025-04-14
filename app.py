@@ -193,17 +193,57 @@ def search():
     folder_path = "episodes"
     search_results = search_in_files(folder_path, search_term)
     
+    # Load all episodes to establish correct order
+    all_episodes = load_episodes()
+    
+    # Create a mapping of episode title to its chronological position
+    episode_positions = {}
+    transcript_to_title = {}
+    
+    # First, create mapping of transcript filenames to episode titles
+    for episode in all_episodes:
+        if 'transcript_file' in episode:
+            transcript_name = os.path.splitext(episode['transcript_file'])[0]
+            transcript_to_title[transcript_name] = episode['title']
+            
+    # Then create position mapping for all possible names
+    for i, episode in enumerate(all_episodes):
+        # Map the episode title to its position
+        episode_positions[episode['title']] = i
+        
+        # If there's a transcript file, map its name too
+        if 'transcript_file' in episode:
+            transcript_name = os.path.splitext(episode['transcript_file'])[0]
+            episode_positions[transcript_name] = i
+    
     # Convert the results OrderedDict to a regular dict for easier manipulation
     results_dict = dict(search_results['results'])
     
-    # Sort the results based on article IDs
+    # Sort the results based on episode position in the full episodes list
+    def get_position(episode_name):
+        # First try direct lookup
+        if episode_name in episode_positions:
+            return episode_positions[episode_name]
+        
+        # Try to find a close match
+        for known_name in episode_positions:
+            if episode_name in known_name or known_name in episode_name:
+                return episode_positions[known_name]
+        
+        # If we couldn't find any match, put it at the end
+        print(f"Warning: Could not find position for episode: {episode_name}")
+        return 999999
+    
     sorted_results = dict(
         sorted(
             results_dict.items(),
-            key=lambda x: get_article_id(x[0]),  # Sort by article ID
-            reverse=reverse_order
+            key=lambda x: get_position(x[0])
         )
     )
+    
+    # If reverse_order is true, reverse the sorted dictionary after sorting
+    if reverse_order:
+        sorted_results = dict(reversed(list(sorted_results.items())))
     
     # Keep the original order for the graph data
     original_occurrences = search_results['occurrences_per_episode']
