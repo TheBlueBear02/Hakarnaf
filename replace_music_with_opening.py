@@ -1,9 +1,11 @@
 import os
+import re
 
 def replace_in_txt_files(folder_path):
-    targets = [
-        "[מוזיקה][מחיאות כפיים]",
-        "[מחיאות כפיים][מוזיקה]"
+    # Define regex patterns to match both with and without space
+    patterns = [
+        r"\[מוזיקה\]\s*\[מחיאות כפיים\]",
+        r"\[מחיאות כפיים\]\s*\[מוזיקה\]"
     ]
 
     for filename in os.listdir(folder_path):
@@ -12,11 +14,12 @@ def replace_in_txt_files(folder_path):
             with open(file_path, 'r', encoding='utf-8') as file:
                 content = file.read()
 
-            for target in targets:
-                content = content.replace(target, "[פתיח]")
+            new_content = content
+            for pattern in patterns:
+                new_content = re.sub(pattern, "[פתיח]", new_content)
 
             with open(file_path, 'w', encoding='utf-8') as file:
-                file.write(content)
+                file.write(new_content)
 
             print(f"Updated: {filename}")
 
