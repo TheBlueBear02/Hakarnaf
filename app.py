@@ -2,8 +2,49 @@ from flask import Flask, render_template, request, redirect, url_for
 import os
 import json
 import collections
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
+from dotenv import load_dotenv
 
 app = Flask(__name__)
+
+# Load environment variables
+load_dotenv()
+
+def get_spotify_client():
+    """Initialize and return Spotify client."""
+    client_id = os.getenv('spotify_client_id')
+    client_secret = os.getenv('spotify_client_secret')
+    auth_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
+    return spotipy.Spotify(auth_manager=auth_manager)
+
+def get_episode_durations(episodes):
+    """Get episode durations from Spotify."""
+    sp = get_spotify_client()
+    total_duration_ms = 0
+    episode_count = 0
+    
+    for episode in episodes:
+        if 'spotify_episode_id' in episode:
+            try:
+                result = sp.episode(episode['spotify_episode_id'])
+                if result and 'duration_ms' in result:
+                    total_duration_ms += result['duration_ms']
+                    episode_count += 1
+            except Exception as e:
+                print(f"Error fetching episode duration: {e}")
+                continue
+    
+    # Convert total duration from ms to minutes and hours
+    total_minutes = total_duration_ms / (1000 * 60)
+    total_hours = total_minutes / 60
+    avg_minutes = total_minutes / episode_count if episode_count > 0 else 0
+    
+    return {
+        "total_duration_hours": f"{total_hours:.1f}",
+        "total_duration_minutes": f"{total_minutes:.0f}",
+        "avg_duration_minutes": f"{avg_minutes:.0f}"
+    }
 
 def load_episodes():
     """Loads episodes data from the episodes.json file."""
@@ -39,6 +80,10 @@ def calculate_episode_stats():
     total_words = 0  # Track total words across all episodes
     episode_count = 0  # Track the number of episodes
 
+    # Load episodes for duration stats
+    episodes = load_episodes()
+    duration_stats = get_episode_durations(episodes)
+
     for filename in os.listdir(folder_path):
         if filename.endswith(".txt"):
             episode_count += 1  # Increment episode count
@@ -73,12 +118,16 @@ def calculate_episode_stats():
 
     most_common_names = name_counter.most_common()
 
+    # Add duration stats to the return value
     return {
         "most_common_words": most_common_words,
         "most_common_names": most_common_names,
         "total_words": total_words_formatted,
         "episode_count": episode_count,
-        "avg_words_per_episode": avg_words_per_episode_formatted  # Pass formatted value
+        "avg_words_per_episode": avg_words_per_episode_formatted,
+        "total_duration_hours": duration_stats["total_duration_hours"],
+        "total_duration_minutes": duration_stats["total_duration_minutes"],
+        "avg_duration_minutes": duration_stats["avg_duration_minutes"]
     }
 
 def search_in_files(folder_path, search_term):

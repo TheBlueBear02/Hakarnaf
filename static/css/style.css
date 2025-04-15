@@ -405,37 +405,48 @@ header h5 {
 
 .stats-grid {
     display: flex;
-    justify-content: space-around;
+    flex-direction: column;
     gap: 1rem;
-    margin-bottom: 2rem;
+    margin: 2rem 0;
+}
+
+.stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.stats-row:last-child {
+    justify-content: center;
+    padding: 0 calc(50% - 40%); /* This creates space for only 2 cards */
 }
 
 .stat-card {
-    background-color: white;
-    border: 1px solid var(--border-color);
+    background-color: #ffffff;
     border-radius: 8px;
-    padding: 1rem;
+    padding: 1.5rem;
     text-align: center;
-    flex: 1;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    flex: 1;
+    min-width: 150px;
+    max-width: 200px;
+    transition: transform 0.2s ease-in-out;
 }
 
 .stat-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .stat-value {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: bold;
-    color: var(--accent-color);
+    color: #4a90e2;
     margin-bottom: 0.5rem;
 }
 
 .stat-label {
     font-size: 1rem;
-    color: var(--secondary-color);
+    color: #666;
 }
 
 .common-words {
@@ -920,4 +931,21 @@ footer {
     display: flex;
     justify-content: space-between; /* Space out the title and button */
     align-items: center; /* Align items vertically */
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+    .stats-row {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .stats-row:last-child {
+        padding: 0;
+    }
+
+    .stat-card {
+        width: 100%;
+        max-width: 250px;
+    }
 }
