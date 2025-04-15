@@ -15,12 +15,23 @@ def get_spotify_client():
     """Initialize and return Spotify client."""
     client_id = os.getenv('spotify_client_id')
     client_secret = os.getenv('spotify_client_secret')
+    
+    if not client_id or not client_secret:
+        return None
+        
     auth_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
     return spotipy.Spotify(auth_manager=auth_manager)
 
 def get_episode_durations(episodes):
     """Get episode durations from Spotify."""
     sp = get_spotify_client()
+    if not sp:
+        return {
+            "total_duration_hours": "N/A",
+            "total_duration_minutes": "N/A",
+            "avg_duration_minutes": "N/A"
+        }
+    
     total_duration_ms = 0
     episode_count = 0
     
@@ -35,10 +46,17 @@ def get_episode_durations(episodes):
                 print(f"Error fetching episode duration: {e}")
                 continue
     
+    if episode_count == 0:
+        return {
+            "total_duration_hours": "N/A",
+            "total_duration_minutes": "N/A",
+            "avg_duration_minutes": "N/A"
+        }
+    
     # Convert total duration from ms to minutes and hours
     total_minutes = total_duration_ms / (1000 * 60)
     total_hours = total_minutes / 60
-    avg_minutes = total_minutes / episode_count if episode_count > 0 else 0
+    avg_minutes = total_minutes / episode_count
     
     return {
         "total_duration_hours": f"{total_hours:.1f}",
