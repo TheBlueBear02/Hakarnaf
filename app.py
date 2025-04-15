@@ -5,11 +5,19 @@ import collections
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from dotenv import load_dotenv
+from functools import lru_cache
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
 # Load environment variables
 load_dotenv()
+
+# Add this cache variable
+_duration_stats_cache = {
+    "stats": None,
+    "last_updated": None
+}
 
 def get_spotify_client():
     """Initialize and return Spotify client."""
@@ -22,8 +30,15 @@ def get_spotify_client():
     auth_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
     return spotipy.Spotify(auth_manager=auth_manager)
 
-def get_episode_durations(episodes):
-    """Get episode durations from Spotify."""
+@lru_cache(maxsize=1)
+def get_episode_durations(cache_key):
+    """Get episode durations from Spotify with caching."""
+    # Check if we have cached stats and they're less than 24 hours old
+    if (_duration_stats_cache["stats"] is not None and 
+        _duration_stats_cache["last_updated"] is not None and 
+        datetime.now() - _duration_stats_cache["last_updated"] < timedelta(hours=24)):
+        return _duration_stats_cache["stats"]
+    
     sp = get_spotify_client()
     if not sp:
         return {
@@ -35,6 +50,7 @@ def get_episode_durations(episodes):
     total_duration_ms = 0
     episode_count = 0
     
+    episodes = load_episodes()
     for episode in episodes:
         if 'spotify_episode_id' in episode:
             try:
@@ -47,22 +63,27 @@ def get_episode_durations(episodes):
                 continue
     
     if episode_count == 0:
-        return {
+        stats = {
             "total_duration_hours": "N/A",
             "total_duration_minutes": "N/A",
             "avg_duration_minutes": "N/A"
         }
+    else:
+        total_minutes = total_duration_ms / (1000 * 60)
+        total_hours = total_minutes / 60
+        avg_minutes = total_minutes / episode_count
+        
+        stats = {
+            "total_duration_hours": f"{total_hours:.1f}",
+            "total_duration_minutes": f"{total_minutes:.0f}",
+            "avg_duration_minutes": f"{avg_minutes:.0f}"
+        }
     
-    # Convert total duration from ms to minutes and hours
-    total_minutes = total_duration_ms / (1000 * 60)
-    total_hours = total_minutes / 60
-    avg_minutes = total_minutes / episode_count
+    # Update cache
+    _duration_stats_cache["stats"] = stats
+    _duration_stats_cache["last_updated"] = datetime.now()
     
-    return {
-        "total_duration_hours": f"{total_hours:.1f}",
-        "total_duration_minutes": f"{total_minutes:.0f}",
-        "avg_duration_minutes": f"{avg_minutes:.0f}"
-    }
+    return stats
 
 def load_episodes():
     """Loads episodes data from the episodes.json file."""
@@ -98,9 +119,9 @@ def calculate_episode_stats():
     total_words = 0  # Track total words across all episodes
     episode_count = 0  # Track the number of episodes
 
-    # Load episodes for duration stats
-    episodes = load_episodes()
-    duration_stats = get_episode_durations(episodes)
+    # Generate a cache key based on the current day
+    cache_key = datetime.now().strftime("%Y-%m-%d")
+    duration_stats = get_episode_durations(cache_key)
 
     for filename in os.listdir(folder_path):
         if filename.endswith(".txt"):
