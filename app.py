@@ -2,88 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for
 import os
 import json
 import collections
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
-from dotenv import load_dotenv
-from functools import lru_cache
-from datetime import datetime, timedelta
 
 app = Flask(__name__)
-
-# Load environment variables
-load_dotenv()
-
-# Add this cache variable
-_duration_stats_cache = {
-    "stats": None,
-    "last_updated": None
-}
-
-def get_spotify_client():
-    """Initialize and return Spotify client."""
-    client_id = os.getenv('spotify_client_id')
-    client_secret = os.getenv('spotify_client_secret')
-    
-    if not client_id or not client_secret:
-        return None
-        
-    auth_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
-    return spotipy.Spotify(auth_manager=auth_manager)
-
-@lru_cache(maxsize=1)
-def get_episode_durations(cache_key):
-    """Get episode durations from Spotify with caching."""
-    # Check if we have cached stats and they're less than 24 hours old
-    if (_duration_stats_cache["stats"] is not None and 
-        _duration_stats_cache["last_updated"] is not None and 
-        datetime.now() - _duration_stats_cache["last_updated"] < timedelta(hours=24)):
-        return _duration_stats_cache["stats"]
-    
-    sp = get_spotify_client()
-    if not sp:
-        return {
-            "total_duration_hours": "N/A",
-            "total_duration_minutes": "N/A",
-            "avg_duration_minutes": "N/A"
-        }
-    
-    total_duration_ms = 0
-    episode_count = 0
-    
-    episodes = load_episodes()
-    for episode in episodes:
-        if 'spotify_episode_id' in episode:
-            try:
-                result = sp.episode(episode['spotify_episode_id'])
-                if result and 'duration_ms' in result:
-                    total_duration_ms += result['duration_ms']
-                    episode_count += 1
-            except Exception as e:
-                print(f"Error fetching episode duration: {e}")
-                continue
-    
-    if episode_count == 0:
-        stats = {
-            "total_duration_hours": "N/A",
-            "total_duration_minutes": "N/A",
-            "avg_duration_minutes": "N/A"
-        }
-    else:
-        total_minutes = total_duration_ms / (1000 * 60)
-        total_hours = total_minutes / 60
-        avg_minutes = total_minutes / episode_count
-        
-        stats = {
-            "total_duration_hours": f"{total_hours:.1f}",
-            "total_duration_minutes": f"{total_minutes:.0f}",
-            "avg_duration_minutes": f"{avg_minutes:.0f}"
-        }
-    
-    # Update cache
-    _duration_stats_cache["stats"] = stats
-    _duration_stats_cache["last_updated"] = datetime.now()
-    
-    return stats
 
 def load_episodes():
     """Loads episodes data from the episodes.json file."""
@@ -116,29 +36,22 @@ def calculate_episode_stats():
                   "משטרה", "שב\"כ", "מלחמה", "קטאר"
                   ]
     word_counter = collections.Counter()
-    total_words = 0  # Track total words across all episodes
-    episode_count = 0  # Track the number of episodes
-
-    # Generate a cache key based on the current day
-    cache_key = datetime.now().strftime("%Y-%m-%d")
-    duration_stats = get_episode_durations(cache_key)
+    total_words = 0
+    episode_count = 0
 
     for filename in os.listdir(folder_path):
         if filename.endswith(".txt"):
-            episode_count += 1  # Increment episode count
+            episode_count += 1
             file_path = os.path.join(folder_path, filename)
             with open(file_path, "r", encoding="utf-8") as file:
                 text = file.read().lower()
-                total_words += len(text.split())  # Count words in the episode
+                total_words += len(text.split())
                 for word in word_list:
                     word_counter[word] += text.count(word)
 
     most_common_words = word_counter.most_common()
-
-    # Calculate average words per episode
     avg_words_per_episode = total_words // episode_count if episode_count > 0 else 0
 
-    # Format total words and average words per episode with commas
     total_words_formatted = f"{total_words:,}"
     avg_words_per_episode_formatted = f"{avg_words_per_episode:,}"
 
@@ -157,16 +70,12 @@ def calculate_episode_stats():
 
     most_common_names = name_counter.most_common()
 
-    # Add duration stats to the return value
     return {
         "most_common_words": most_common_words,
         "most_common_names": most_common_names,
         "total_words": total_words_formatted,
         "episode_count": episode_count,
-        "avg_words_per_episode": avg_words_per_episode_formatted,
-        "total_duration_hours": duration_stats["total_duration_hours"],
-        "total_duration_minutes": duration_stats["total_duration_minutes"],
-        "avg_duration_minutes": duration_stats["avg_duration_minutes"]
+        "avg_words_per_episode": avg_words_per_episode_formatted
     }
 
 def search_in_files(folder_path, search_term):
