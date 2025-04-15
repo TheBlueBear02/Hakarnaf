@@ -55,6 +55,16 @@ def calculate_episode_stats():
     total_words_formatted = f"{total_words:,}"
     avg_words_per_episode_formatted = f"{avg_words_per_episode:,}"
 
+    # Load duration data
+    try:
+        with open('duration_cache.json', 'r', encoding='utf-8') as f:
+            duration_cache = json.load(f)
+            total_duration = duration_cache['metadata']['total_duration_hours']
+            avg_duration = round(total_duration * 60 / episode_count, 1) if episode_count > 0 else 0
+    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+        total_duration = 0
+        avg_duration = 0
+
     names = ["רונן בר", "הרצי", "ביבי", "בנימין נתניהו", "ישראל כץ", "בצלאל סמוטריץ", "בן גביר", "גנץ","בנט", "איילת שקד", " גלנט", "גדי איזנקוט", "בן גוריון","טראמפ","אמסלם","האריס", "לפיד", "ליברמן", "אהוד ברק", "אהרון ברק",
              "ביידן", "פלדשטיין","בוגי","טלי גוטליב", "יריב לוין", "קרעי", "סינוואר", "נסראללה", "ברדוגו"
              ]
@@ -75,7 +85,9 @@ def calculate_episode_stats():
         "most_common_names": most_common_names,
         "total_words": total_words_formatted,
         "episode_count": episode_count,
-        "avg_words_per_episode": avg_words_per_episode_formatted
+        "avg_words_per_episode": avg_words_per_episode_formatted,
+        "total_duration_hours": total_duration,
+        "avg_duration_hours": avg_duration
     }
 
 def search_in_files(folder_path, search_term):
@@ -139,7 +151,9 @@ def home():
         stats=stats,
         total_words=stats["total_words"],  # Pass formatted total words
         episode_count=stats["episode_count"] + 1,  # Pass episode count
-        avg_words_per_episode=stats["avg_words_per_episode"]  # Pass formatted average words per episode
+        avg_words_per_episode=stats["avg_words_per_episode"],  # Pass formatted average words per episode
+        total_duration=stats["total_duration_hours"],  # Pass total duration
+        avg_duration=stats["avg_duration_hours"]  # Pass average duration
     )
 
 @app.route('/article/<int:article_id>')

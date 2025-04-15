@@ -8,6 +8,8 @@ import os
 from datetime import datetime
 import time  # Import the time module to measure runtime
 import json  # Import the json module
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
 from getSpotifyEpisodeId import search_episode_by_name
 
 # Load environment variables from .env
@@ -173,6 +175,56 @@ def get_spotify_episode_date(episode_id):
         print(f"Error fetching Spotify episode date: {e}")
         return "Unknown Date"
 
+def update_duration_cache(spotify_id, duration_ms):
+    """Updates the duration cache with a new episode's duration."""
+    try:
+        # Load existing cache
+        try:
+            with open('duration_cache.json', 'r', encoding='utf-8') as f:
+                duration_cache = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            duration_cache = {
+                "metadata": {
+                    "total_duration_hours": 0,
+                    "last_updated": None
+                },
+                "episode_durations": {}
+            }
+
+        # Add new episode duration
+        duration_cache['episode_durations'][spotify_id] = duration_ms
+
+        # Update total duration (convert from ms to hours)
+        total_duration_ms = sum(duration_cache['episode_durations'].values())
+        duration_cache['metadata']['total_duration_hours'] = round(total_duration_ms / (1000 * 60 * 60), 1)
+        duration_cache['metadata']['last_updated'] = datetime.now().strftime('%Y-%m-%d')
+
+        # Save updated cache
+        with open('duration_cache.json', 'w', encoding='utf-8') as f:
+            json.dump(duration_cache, f, ensure_ascii=False, indent=4)
+
+        print(f"Updated duration cache. Total duration: {duration_cache['metadata']['total_duration_hours']} hours")
+    except Exception as e:
+        print(f"Error updating duration cache: {e}")
+
+def get_episode_duration(spotify_id):
+    """Gets episode duration from Spotify API."""
+    try:
+        client_credentials_manager = SpotifyClientCredentials(
+            client_id=os.getenv('SPOTIFY_CLIENT_ID'),
+            client_secret=os.getenv('SPOTIFY_CLIENT_SECRET')
+        )
+        sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+        
+        # Get episode details from Spotify
+        episode_info = sp.episode(spotify_id)
+        duration_ms = episode_info['duration_ms']
+        
+        return duration_ms
+    except Exception as e:
+        print(f"Error fetching episode duration: {e}")
+        return None
+
 if __name__ == "__main__":
     # Record the start time
     start_time = time.time()
@@ -258,3 +310,11 @@ if __name__ == "__main__":
     print(f"Transcript saved in: {transcript_filename}")
     print(f"Episode metadata updated in: {json_filename}")
     print(f"Script completed in {elapsed_time:.2f} seconds.")
+
+    # Get Spotify episode ID
+    spotify_id = search_episode_by_name(title)
+    if spotify_id:
+        # Get episode duration and update cache
+        duration_ms = get_episode_duration(spotify_id)
+        if duration_ms:
+            update_duration_cache(spotify_id, duration_ms)
