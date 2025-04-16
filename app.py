@@ -60,7 +60,7 @@ def calculate_episode_stats():
         with open('duration_cache.json', 'r', encoding='utf-8') as f:
             duration_cache = json.load(f)
             total_duration = duration_cache['metadata']['total_duration_hours']
-            avg_duration = round(total_duration * 60 / episode_count + 1, 1) if episode_count > 0 else 0
+            avg_duration = round(total_duration * 60 / (episode_count + 1), 1) if episode_count > 0 else 0
     except (FileNotFoundError, json.JSONDecodeError, KeyError):
         total_duration = 0
         avg_duration = 0
